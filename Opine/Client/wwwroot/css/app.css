@@ -193,17 +193,25 @@ app {
 
 :root{
     --color: royalblue;
-    --margin: 15rem;
+    --margin: 10rem;
 }
 
 
 .dashboard {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-row-gap: 50px;
+    grid-row-gap: 40px;
     justify-content: space-evenly;
     grid-template-columns: 10rem 10rem;
     justify-items: center;
+}
+
+.cardlinks{
+    width: 150%;
+}
+
+.dashcontcolor {
+    background-color: lightsteelblue;
 }
 
 /*Login*/
@@ -354,17 +362,9 @@ app {
     justify-content: center;
 }
 
-.questions-div{
-    margin-left: var(--margin);
-}
-
-    .questions-div h2 {
-        margin-top: 1rem;
-    }
-
 
     #title, #question, #optiona, #optionb, #optionc, #optiond {
-        width: 70%;
+        width: 100%;
         margin-top: 1rem;
         padding-left: 2rem;
         border-color: var(--color);
@@ -376,11 +376,35 @@ app {
     border-color: var(--color);
     border-radius: 3px;
     padding: 5px 30px 7px 30px;
+    outline: none;
 }
 
+.qform{
+    padding-left: 10rem;
+    padding-right: 10rem;
+}
 
+/*****Response*/
+.responsebg{
+    background-color: lightgrey;
+    margin-left:45px;
+    margin-right:45px;
+    border-radius: 20px;
+}
 
+.questionbg {
+    background-color: lightgrey;
+    border-radius: 20px;
+}
 
+.listbutton {
+    height: 35px;
+    outline: none;
+}
+
+.restimelogo{
+    padding-top: 2px;
+}
 
 
 
