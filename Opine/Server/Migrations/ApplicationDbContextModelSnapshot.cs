@@ -19,6 +19,24 @@ namespace Opine.Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.2");
 
+            modelBuilder.Entity("Opine.Shared.Entities.Company", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Companies");
+                });
+
             modelBuilder.Entity("Opine.Shared.Entities.Poll", b =>
                 {
                     b.Property<int>("Id")
@@ -56,21 +74,21 @@ namespace Opine.Server.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("A")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("B")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("C")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Companyid")
+                        .HasColumnType("int");
+
                     b.Property<string>("D")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Ques")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UploadTime")
@@ -78,7 +96,32 @@ namespace Opine.Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Companyid");
+
                     b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("Opine.Shared.Entities.Token", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int?>("Companyid")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("TokenId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Companyid");
+
+                    b.ToTable("Tokens");
                 });
 
             modelBuilder.Entity("Opine.Shared.Entities.Poll", b =>
@@ -90,6 +133,29 @@ namespace Opine.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Question");
+                });
+
+            modelBuilder.Entity("Opine.Shared.Entities.Question", b =>
+                {
+                    b.HasOne("Opine.Shared.Entities.Company", "Company")
+                        .WithMany("Questions")
+                        .HasForeignKey("Companyid");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Opine.Shared.Entities.Token", b =>
+                {
+                    b.HasOne("Opine.Shared.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("Companyid");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("Opine.Shared.Entities.Company", b =>
+                {
+                    b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618
         }
