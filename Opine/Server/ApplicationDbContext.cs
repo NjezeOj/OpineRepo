@@ -17,5 +17,8 @@ namespace Opine.Server
 
         public DbSet<Question> Questions { get; set; }
         public DbSet<Poll> Polls { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Token> Tokens { get; set; }
+
     }
 }
