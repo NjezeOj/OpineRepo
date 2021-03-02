@@ -3,46 +3,64 @@
 @page "/loginpage"
 
 
-<div class="login div1">
-    <div class="logo1div">
-        <img class="logo1" src="Images/loginwork.svg" />
-    </div>
-    
-    <div class="login-h2">
-        <h2> For your organisation</h2>
-    </div>
-    <div class="login-pitch">
-        <p>Manage your company's data with advanced security and
-        control, so you can exable your teams to share and 
-        collaborate safely.</p>
-    </div>
-</div>
+<EditForm Model="userInfo" OnValidSubmit="Login">
+    <div class="login div1">
+        <div class="logo1div">
+            <img class="logo1" src="Images/loginwork.svg" />
+        </div>
 
-<div class="login div2">
-    <div class="login-logo">
-        <img src="Images/logo.svg" />
+        <div class="login-h2">
+            <h2> For your organisation</h2>
+        </div>
+        <div class="login-pitch">
+            <p>
+                Manage your company's data with advanced security and
+                control, so you can exable your teams to share and
+                collaborate safely.
+            </p>
+        </div>
     </div>
-    
 
-    <div class="div2-child2">
-        <h2>Welcome back</h2>
-        <p>Login to manage your account</p>
-        <form>
-            <input placeholder="Email" type="email" id="useremail" name="useremail" />
-            <input placeholder="Password" type="password" id="userpword" name="userpword" />
+    <div class="login div2">
+        <div class="login-logo">
+            <img src="Images/logo.svg" />
+        </div>
+
+
+        <div class="div2-child2">
+            <h2>Welcome back</h2>
+            <p>Login to manage your account</p>
+
+            <div class="form-group">
+                <div>
+                    <InputText id="s-username" class="form-control border-secondary" placeholder="Fullname" @bind-Value="@userInfo.FullName" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div>
+                    <InputText id="s-useremail" class="form-control border-secondary" placeholder="Email" @bind-Value="@userInfo.Email" />
+                </div>
+            </div>
 
             <div class="login-sign">
                 <button class="loginsign logbutt">Login</button>
                 <button class="loginsign signbutt" type="submit">Sign Up</button>
             </div>
-        </form>
+
+        </div>
     </div>
-</div>
 
 
+
+</EditForm>
 
 
 
 @code {
-    
+    private UserInfo userInfo = new UserInfo();
+
+    private void Login()
+    {
+
+    }
 }
