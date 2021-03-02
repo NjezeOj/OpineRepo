@@ -19,6 +19,6 @@ namespace Opine.Server
         public DbSet<Poll> Polls { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Token> Tokens { get; set; }
-
+        public DbSet<Voted> Votes { get; set; }
     }
 }

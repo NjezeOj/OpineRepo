@@ -6,8 +6,9 @@ namespace Opine.Shared.Entities
 {
     public class Company
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         public string CompanyName { get; set; }
+        public string Email { get; set; }
         public List<Question> Questions { get; set; }
     }
 }

@@ -244,9 +244,10 @@ app {
 }
 
 .logo1 {
-    width: 30rem;
+    width: 20rem;
     height: 18rem;
 }
+
 
 .div1 {
     display: flex;
@@ -332,7 +333,6 @@ app {
 
 .sdiv2-child2 {
     margin-left: 5rem;
-   
 }
 
 #s-username {

@@ -1,0 +1,61 @@
+﻿@page "/company/create"
+
+<EditForm Model="company" OnValidSubmit="CreateCompany">
+    <div class="login div1">
+        <div class="logo1div">
+            <img class="logo1" src="Images/Group.png" />
+        </div>
+
+        <div class="login-h2">
+            <h2> Get the answers you need</h2>
+        </div>
+        <div class="login-pitch">
+            <p>
+                Get the feedback you need using the best result analysis
+                platform.
+            </p>
+        </div>
+    </div>
+
+
+    <div class="login ssdiv2">
+        <div class="login-logo">
+            <img src="Images/logo.svg" />
+        </div>
+
+
+        <div class="sdiv2-child2">
+            <h2>Sign Up</h2>
+            <p>Enter company details to create account</p>
+            <div class="form-group">
+                <div>
+                    <InputText id="s-username" class="form-control border-secondary" placeholder="Company name" @bind-Value="@company.CompanyName" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div>
+                    <InputText id="s-useremail" class="form-control border-secondary" placeholder="Company Email" @bind-Value="@company.Email" />
+                </div>
+            </div>
+
+            <div class="login-sign">
+                <button type="submit" class="loginsign logbutt">Sign Up</button>
+            </div>
+
+        </div>
+
+    </div>
+
+
+</EditForm>
+
+
+@code {
+    private Company company = new Company();
+
+    private void CreateCompany()
+    {
+
+    }
+}
+
