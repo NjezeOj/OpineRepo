@@ -348,27 +348,26 @@ app {
     border-color: var(--color);
 }
 
-#s-userpword {
-    width: 70%;
+
+
+/****Questions*****/
+#flex-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#create-survey{
+    
+}
+
+
+#question, #options {
+    width: 80%;
     margin-top: 1rem;
     padding-left: 2rem;
     border-color: var(--color);
 }
-
-
-/****Questions*****/
-.create-survey{
-    display: flex;
-    justify-content: center;
-}
-
-
-    #title, #question, #optiona, #optionb, #optionc, #optiond {
-        width: 100%;
-        margin-top: 1rem;
-        padding-left: 2rem;
-        border-color: var(--color);
-    }
 
 .create-survey button {
     background-color: var(--color);
@@ -385,12 +384,7 @@ app {
 }
 
 /*****Response*/
-.responsebg{
-    background-color: lightgrey;
-    margin-left:45px;
-    margin-right:45px;
-    border-radius: 20px;
-}
+
 
 .questionbg {
     background-color: lightgrey;
