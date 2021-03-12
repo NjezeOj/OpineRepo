@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Opine.Client.Helpers;
+using Opine.Client.Repository;
 
 namespace Opine.Client
 {
@@ -17,9 +19,18 @@ namespace Opine.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddSingleton( new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            ConfigureServices(builder.Services);
 
             await builder.Build().RunAsync();
+        }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddScoped<IHttpService, HttpService>();
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IQuestionRepository, QuestionRespository>();
+            services.AddAuthorizationCore();
         }
     }
 }

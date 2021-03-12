@@ -1,4 +1,6 @@
 ﻿@page "/company/create"
+@inject ICompanyRepository companyRepository
+@inject NavigationManager navigationManager
 
 <EditForm Model="company" OnValidSubmit="CreateCompany">
     <div class="login div1">
@@ -41,7 +43,6 @@
             <div class="login-sign">
                 <button type="submit" class="loginsign logbutt">Sign Up</button>
             </div>
-
         </div>
 
     </div>
@@ -53,9 +54,18 @@
 @code {
     private Company company = new Company();
 
-    private void CreateCompany()
+    private async Task CreateCompany()
     {
+        try
+        {
+            await companyRepository.CreateCompany(company);
+            navigationManager.NavigateTo("/");
+        }
 
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 }
 
