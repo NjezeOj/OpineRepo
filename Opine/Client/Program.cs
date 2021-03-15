@@ -9,6 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Opine.Client.Helpers;
 using Opine.Client.Repository;
+using Microsoft.AspNetCore.Components.Authorization;
+using Opine.Client.Auth;
 
 namespace Opine.Client
 {
@@ -31,6 +33,12 @@ namespace Opine.Client
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IQuestionRepository, QuestionRespository>();
             services.AddAuthorizationCore();
+
+            services.AddScoped<JWTAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider, JWTAuthenticationStateProvider>(
+                provider => provider.GetRequiredService<JWTAuthenticationStateProvider>());
+            services.AddScoped<ILoginService, JWTAuthenticationStateProvider>(
+                provider => provider.GetRequiredService<JWTAuthenticationStateProvider>());
         }
     }
 }
