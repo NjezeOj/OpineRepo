@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Opine.Server.Entities;
 using Opine.Shared.DTOS;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
+using System.Security.Claims;  
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,13 +18,13 @@ namespace Opine.Server.Controllers
     [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
 
         public AccountsController(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             IConfiguration configuration)
         {
             _userManager = userManager;
@@ -31,10 +32,10 @@ namespace Opine.Server.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost("Create")]
+        [HttpPost("Register")]
         public async Task<ActionResult<UserToken>> CreateUser([FromBody] UserInfo model)
         {
-            var user = new IdentityUser { UserName = model.FullName, Email = model.Email };
+            var user = new ApplicationUser { UserName = model.FullName, Email = model.Email, Company = model.Company };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -67,7 +68,10 @@ namespace Opine.Server.Controllers
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name, userinfo.FullName),
-                new Claim(ClaimTypes.Email, userinfo.Email)
+                new Claim(ClaimTypes.Email, userinfo.Email),
+                new Claim("Company", userinfo.Company)
+
+
 
             };
 
@@ -79,7 +83,7 @@ namespace Opine.Server.Controllers
 
             JwtSecurityToken token = new JwtSecurityToken(
                 issuer: null,
-                audience: null,
+                audience: null,  
                 claims: claims,
                 expires: expiration,
                 signingCredentials: creds);

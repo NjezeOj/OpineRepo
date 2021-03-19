@@ -1,7 +1,7 @@
-﻿@using Radzen
-@using Radzen.Blazor
-@page "/loginpage"
-
+﻿@page "/loginpage"
+@inject IAccountsRepository accountsRepository
+@inject ILoginService loginService
+@inject NavigationManager navigationManager  
 
 <EditForm Model="userInfo" OnValidSubmit="Login">
     <div class="login div1">
@@ -33,18 +33,18 @@
 
             <div class="form-group">
                 <div>
-                    <InputText id="s-username" class="form-control border-secondary" placeholder="Fullname" @bind-Value="@userInfo.FullName" />
+                    <InputText id="s-username" class="form-control border-secondary" placeholder="Fullname" @bind-Value="@userInfo.Email" />
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    <InputText id="s-useremail" class="form-control border-secondary" placeholder="Email" @bind-Value="@userInfo.Email" />
+                    <InputPassword  @bind-Value="@userInfo.Password" />
                 </div>
             </div>
 
             <div class="login-sign">
-                <button class="loginsign logbutt">Login</button>
-                <button class="loginsign signbutt" type="submit">Sign Up</button>
+                <button class="loginsign logbutt" type="submit">Login</button>
+                <button class="loginsign signbutt">Sign Up</button>
             </div>
 
         </div>
@@ -59,8 +59,10 @@
 @code {
     private UserInfo userInfo = new UserInfo();
 
-    private void Login()
+    private async void Login()
     {
-
+        var userToken = await accountsRepository.Login(userInfo);
+        await loginService.Login(userToken.Token);
+        navigationManager.NavigateTo("");
     }
 }

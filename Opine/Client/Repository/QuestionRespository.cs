@@ -10,7 +10,7 @@ namespace Opine.Client.Repository
     public class QuestionRespository: IQuestionRepository
     {
         private readonly IHttpService httpService;
-        string url = "api/questions";
+        private readonly string baseURL = "api/questions";
         public QuestionRespository(IHttpService httpService)
         {
             this.httpService = httpService;
@@ -18,7 +18,7 @@ namespace Opine.Client.Repository
 
         public async Task<List<Question>> GetQuestions()
         {
-            var response = await httpService.Get<List<Question>>(url);
+            var response = await httpService.Get<List<Question>>(baseURL);
             if (!response.Success)
             {
                 throw new ApplicationException(await response.GetBody());
@@ -29,7 +29,7 @@ namespace Opine.Client.Repository
 
         public async Task CreateQuestion(Question quest)
         {
-            var response = await httpService.Post(url, quest);
+            var response = await httpService.Post(baseURL, quest);
             if (!response.Success)
             {
                 throw new ApplicationException(await response.GetBody());

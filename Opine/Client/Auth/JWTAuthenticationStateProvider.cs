@@ -15,9 +15,9 @@ namespace Opine.Client.Auth
     public class JWTAuthenticationStateProvider : AuthenticationStateProvider, ILoginService
     {
         private readonly IJSRuntime js;
-        private HttpClient httpClient;
-        private readonly string TOKENKEY = "TOKENKEY";
-        private AuthenticationState anonymous =>
+        private readonly HttpClient httpClient;
+        private readonly string TOKENKEY = "";
+        private AuthenticationState Anonymous =>
             new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 
         //configure the the httpClient service so that every time we communicate with the web api we return a web api we want to send the jwt so that we get authenticated in the asp.net core app
@@ -33,7 +33,7 @@ namespace Opine.Client.Auth
 
             if (string.IsNullOrEmpty(token))
             { 
-                return anonymous; //authenticationstate
+                return Anonymous; //authenticationstate
             }
 
             //return an authstate that indicates a user is logged in and has claims of the user
@@ -99,6 +99,8 @@ namespace Opine.Client.Auth
         public async Task Logout()
         {
             await js.RemoveItem(TOKENKEY);
+            httpClient.DefaultRequestHeaders.Authorization = null;
+            NotifyAuthenticationStateChanged(Task.FromResult(Anonymous));
         }
     }
 }

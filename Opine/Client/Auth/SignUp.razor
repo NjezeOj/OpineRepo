@@ -1,4 +1,7 @@
 ﻿@page "/signup"
+@inject IAccountsRepository accountsRepository
+@inject ILoginService loginService
+@inject NavigationManager navigationManager
 
 <EditForm Model="userInfo" OnValidSubmit="CreateUser">
     <div class="login div1">
@@ -39,12 +42,12 @@
             </div>
             <div class="form-group">
                 <div>
-                    <InputText id="s-useremail" type="password" class="form-control border-secondary" placeholder="Password" @bind-Value="@userInfo.Password" />
+                    <InputText id="s-useremail" class="form-control border-secondary" placeholder="Company" @bind-Value="@userInfo.Company" />
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    <InputText id="s-useremail" type="password" class="form-control border-secondary" placeholder="Confirm Password" @bind-Value="@userInfo.Password" />
+                    <InputPassword @bind-Value="@userInfo.Password" />
                 </div>
             </div>
 
@@ -55,16 +58,21 @@
         </div>
 
     </div>
-
-
 </EditForm>
 
 
 @code {
     private UserInfo userInfo = new UserInfo();
 
-    private void CreateUser()
+    private async void CreateUser()
     {
+        var userToken = await accountsRepository.Register(userInfo);
+        await loginService.Login(userToken.Token);
+        navigationManager.NavigateTo("");
 
     }
 }
+
+
+ //test@gmail.com
+    //Aa123456!
