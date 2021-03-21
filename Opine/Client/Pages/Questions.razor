@@ -1,5 +1,5 @@
 ﻿@page "/questions"
-
+@inject NavigationManager navigationManager
 <section>
     <div id="flex-container" class="create-survey">
         <button>Polls</button>
@@ -36,12 +36,15 @@
     </div>
 
     <div id="flex-container" class="create-survey mt-5">
-        <button>Create a Poll</button>
+        <button @onclick="@CreatePoll">Create a Poll</button>
     </div>
 
 </section>
 
 
 @code {
-
+    private void CreatePoll()
+    {
+        navigationManager.NavigateTo("/question/create");
+    }
 }

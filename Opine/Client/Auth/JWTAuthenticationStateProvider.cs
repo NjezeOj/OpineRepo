@@ -16,7 +16,7 @@ namespace Opine.Client.Auth
     {
         private readonly IJSRuntime js;
         private readonly HttpClient httpClient;
-        private readonly string TOKENKEY = "";
+        private readonly string TOKENKEY = "TOKENKEY";
         private AuthenticationState Anonymous =>
             new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
 
