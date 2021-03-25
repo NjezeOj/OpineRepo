@@ -29,11 +29,12 @@ namespace Opine.Client.Repository
             return httpResponse.Response;
         }
 
-        public async Task<UserToken> Login(UserInfo userInfo)
+        public async Task<UserToken> Login(UserInfo loginInfo)
         {
-            var httpResponse = await _httpService.Post<UserInfo, UserToken>($"{baseURL}/Login", userInfo);
+            var httpResponse = await _httpService.Post<UserInfo, UserToken>($"{baseURL}/Login", loginInfo);
 
             if (!httpResponse.Success)
+
             {
                 throw new ApplicationException(await httpResponse.GetBody());
             }

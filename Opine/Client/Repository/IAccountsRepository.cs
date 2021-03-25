@@ -8,7 +8,7 @@ namespace Opine.Client.Repository
 {
     public interface IAccountsRepository
     {
-        Task<UserToken> Login(UserInfo userInfo);
+        Task<UserToken> Login(UserInfo loginInfo);
         Task<UserToken> Register(UserInfo userInfo);
     }
 }
