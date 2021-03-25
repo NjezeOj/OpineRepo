@@ -9,5 +9,6 @@ namespace Opine.Server.Entities
     public class ApplicationUser : IdentityUser
     {
         public string Company { get; set; }
+        public int CompanyId { get; set; }
     }
 }
