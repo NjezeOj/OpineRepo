@@ -1,9 +1,10 @@
 ﻿@page "/loginpage"
 @inject IAccountsRepository accountsRepository
+@inject ICompanyRepository companyRepository
 @inject ILoginService loginService
-@inject NavigationManager navigationManager  
+@inject NavigationManager navigationManager
 
-<EditForm Model="userInfo" OnValidSubmit="Login">
+<EditForm Model="loginInfo" OnValidSubmit="Login">
     <div class="login div1">
         <div class="logo1div">
             <img class="logo1" src="Images/loginwork.svg" />
@@ -33,17 +34,18 @@
 
             <div class="form-group">
                 <div>
-                    <InputText id="s-username" class="form-control border-secondary" placeholder="Fullname" @bind-Value="@userInfo.Email" />
+                    <InputText id="s-useremail" class="form-control border-secondary" placeholder="Email" @bind-Value="@loginInfo.Email" />
                 </div>
             </div>
+        
             <div class="form-group">
                 <div>
-                    <InputPassword  @bind-Value="@userInfo.Password" />
+                    <InputPassword @bind-Value="@loginInfo.Password" />
                 </div>
             </div>
 
             <div class="login-sign">
-                <button class="loginsign logbutt" type="submit">Login</button>
+                <button type="submit" class="loginsign logbutt">Login</button>
                 <button class="loginsign signbutt">Sign Up</button>
             </div>
 
@@ -57,12 +59,17 @@
 
 
 @code {
-    private UserInfo userInfo = new UserInfo();
+    private UserInfo loginInfo = new UserInfo();
+   
 
     private async void Login()
     {
-        var userToken = await accountsRepository.Login(userInfo);
+      
+        var userToken = await accountsRepository.Login(loginInfo);
         await loginService.Login(userToken.Token);
         navigationManager.NavigateTo("");
     }
 }
+
+//test@gmail.com
+    //Aa123456!
