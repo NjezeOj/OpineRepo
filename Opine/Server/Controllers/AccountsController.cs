@@ -21,7 +21,8 @@ namespace Opine.Server.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
-
+     
+        
         public AccountsController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -30,12 +31,14 @@ namespace Opine.Server.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            
         }
+   
 
         [HttpPost("Register")]
         public async Task<ActionResult<UserToken>> CreateUser([FromBody] UserInfo model)
         {
-            var user = new ApplicationUser { UserName = model.FullName, Email = model.Email, Company = model.Company };
+            var user = new ApplicationUser { UserName= model.UserName, Email = model.Email, Company = model.Company, CompanyId=model.CompanyId };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -48,14 +51,14 @@ namespace Opine.Server.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult<UserToken>> Login([FromBody] UserInfo userInfo)
+        public async Task<ActionResult<UserToken>> Login([FromBody] UserInfo loginInfo)
         {
-            var result = await _signInManager.PasswordSignInAsync(userInfo.Email,
-                userInfo.Password, isPersistent: false, lockoutOnFailure: false); //lockoutOnFailure: true for production
+            var result = await _signInManager.PasswordSignInAsync(loginInfo.Email, loginInfo.Password, isPersistent: false, lockoutOnFailure: false); //lockoutOnFailure: true for production
 
+           
             if (result.Succeeded)
             {
-                return BuildToken(userInfo);
+                return BuildToken(loginInfo);
             }
             else
             {
@@ -65,15 +68,14 @@ namespace Opine.Server.Controllers
 
         private UserToken BuildToken(UserInfo userinfo)
         {
+            
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Name, userinfo.FullName),
-                new Claim(ClaimTypes.Email, userinfo.Email),
-                new Claim("Company", userinfo.Company)
-
-
-
+                new Claim(ClaimTypes.Name, userinfo.Email),
+                new Claim(ClaimTypes.Email, userinfo.Email)
             };
+
+           
 
             //configuring credentials used to sign in our jwt 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
