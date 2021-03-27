@@ -10,8 +10,8 @@ using Opine.Server;
 namespace Opine.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210325104633_Initial")]
-    partial class Initial
+    [Migration("20210327174633_CustomUserName")]
+    partial class CustomUserName
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -168,6 +168,9 @@ namespace Opine.Server.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomUserName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")

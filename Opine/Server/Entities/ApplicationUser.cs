@@ -10,5 +10,8 @@ namespace Opine.Server.Entities
     {
         public string Company { get; set; }
         public int CompanyId { get; set; }
+        public string CustomUserName { get; set; }
+
+
     }
 }

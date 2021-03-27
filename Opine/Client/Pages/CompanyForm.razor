@@ -59,7 +59,7 @@
         try
         {
             await companyRepository.CreateCompany(company);
-            navigationManager.NavigateTo("/");
+            navigationManager.NavigateTo(""); ///signup
         }
 
         catch (Exception ex)

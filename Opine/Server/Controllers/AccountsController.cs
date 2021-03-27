@@ -38,7 +38,7 @@ namespace Opine.Server.Controllers
         [HttpPost("Register")]
         public async Task<ActionResult<UserToken>> CreateUser([FromBody] UserInfo model)
         {
-            var user = new ApplicationUser { UserName= model.UserName, Email = model.Email, Company = model.Company, CompanyId=model.CompanyId };
+            var user = new ApplicationUser { UserName= model.Email, Email = model.Email, Company= model.Company, CompanyId=model.CompanyId, CustomUserName=model.CustomUserName};
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -72,7 +72,8 @@ namespace Opine.Server.Controllers
             var claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name, userinfo.Email),
-                new Claim(ClaimTypes.Email, userinfo.Email)
+                new Claim(ClaimTypes.Email, userinfo.Email),
+                
             };
 
            
