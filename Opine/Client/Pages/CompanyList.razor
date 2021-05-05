@@ -3,6 +3,8 @@
 
 <h3> Index Company</h3>
 
+<Pagination CurrentPage="@paginationDTO.Page" TotalAmountPages="totalAmountPages"
+            SelectedPage="SelectedPage"/>
 <GenericList List="Companies">
     <WholeListTemplate>
         <table class="table table-striped">
@@ -11,7 +13,7 @@
                     <th></th>
                     <th>Company Name</th>
                 </tr>
-            </thead>
+            </thead> 
             <tbody>
                 @foreach (var company in Companies)
                 {
@@ -30,21 +32,33 @@
     </WholeListTemplate>
 </GenericList>
 @code {
-        List<Company> Companies;
-        PaginationDTO paginationDTO = new PaginationDTO() { Page = 1, RecordsPerPage=100};
+    List<Company> Companies;
+    PaginationDTO paginationDTO = new PaginationDTO();
+    private int totalAmountPages;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var paginatedResponse = await companyRepository.GetCompanies(paginationDTO);
-            Companies = paginatedResponse.Response;
-            Console.WriteLine(paginatedResponse.TotalAmountPages);
-
+            await LoadCompanies();
         }
         catch(Exception ex)
         {
-
+            Console.WriteLine(ex.Message);
         }
+    }
+
+    private async Task LoadCompanies()
+    {
+        var paginatedResponse = await companyRepository.GetCompanies(paginationDTO);
+        Companies = paginatedResponse.Response;
+        totalAmountPages = paginatedResponse.TotalAmountPages;
+    }
+
+    private async Task SelectedPage(int page)
+    {
+        paginationDTO.Page = page;
+        await LoadCompanies();
+
     }
 }
