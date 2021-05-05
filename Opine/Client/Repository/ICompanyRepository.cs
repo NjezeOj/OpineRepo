@@ -1,4 +1,5 @@
-﻿using Opine.Shared.Entities;
+﻿using Opine.Shared.DTOS;
+using Opine.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Opine.Client.Repository
     public interface ICompanyRepository
     {
         Task CreateCompany(Company company);
-        Task<List<Company>> GetCompanies();
+        /*Task<List<Company>> Get();*/
+        Task<PaginatedResponse<List<Company>>> GetCompanies(PaginationDTO paginationDTO);
     }
 }

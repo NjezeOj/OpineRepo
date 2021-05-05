@@ -63,23 +63,25 @@
 
 
 @code {
-    private UserInfo userInfo = new UserInfo();
-    List<Company> Companies;
+        private UserInfo userInfo = new UserInfo();
+        private PaginationDTO paginationDTO = new PaginationDTO() {Page = 1, RecordsPerPage=100 };
+        List<Company> Companies;
 
-    protected override async Task OnInitializedAsync()
-    {
-        Companies = await companyRepository.GetCompanies();
-    }
+        protected override async Task OnInitializedAsync()
+        {
+            var paginatedResponses = await companyRepository.GetCompanies(paginationDTO);
+            Companies = paginatedResponses.Response;
+        }
 
-    private async void CreateUser()
-    {
-        userInfo.CompanyId = Companies.Where(c => c.CompanyName == userInfo.Company).Select(c => c.Id).FirstOrDefault();
-         
-        var userToken = await accountsRepository.Register(userInfo);
-        await loginService.Login(userToken.Token);
-        navigationManager.NavigateTo("");
+        private async void CreateUser()
+        {
+            userInfo.CompanyId = Companies.Where(c => c.CompanyName == userInfo.Company).Select(c => c.Id).FirstOrDefault();
 
-    }
+            var userToken = await accountsRepository.Register(userInfo);
+            await loginService.Login(userToken.Token);
+            navigationManager.NavigateTo("");
+
+        }
     }
 
 

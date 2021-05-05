@@ -1,0 +1,50 @@
+﻿@page "/company"
+@inject ICompanyRepository companyRepository
+
+<h3> Index Company</h3>
+
+<GenericList List="Companies">
+    <WholeListTemplate>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Company Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var company in Companies)
+                {
+                    <tr>
+                        <td>
+                            <a class="btn btn-success">Edit</a>
+                            <button class="btn btn-danger">Delete</button>
+                        </td>
+                        <td>
+                            @company.CompanyName
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </WholeListTemplate>
+</GenericList>
+@code {
+        List<Company> Companies;
+        PaginationDTO paginationDTO = new PaginationDTO() { Page = 1, RecordsPerPage=100};
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var paginatedResponse = await companyRepository.GetCompanies(paginationDTO);
+            Companies = paginatedResponse.Response;
+            Console.WriteLine(paginatedResponse.TotalAmountPages);
+
+        }
+        catch(Exception ex)
+        {
+
+        }
+    }
+}

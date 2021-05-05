@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Opine.Client.Helpers;
+using Opine.Server.Helpers;
+using Opine.Shared.DTOS;
 using Opine.Shared.Entities;
 using System;
 using System.Collections.Generic;
@@ -18,10 +21,19 @@ namespace Opine.Server.Controllers
             this.context = context;
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public async Task<ActionResult<List<Company>>> Get()
         {
             return await context.Companies.ToListAsync();
+        }*/
+
+        [HttpGet]
+        public async Task<ActionResult<List<Company>>> Get([FromQuery]PaginationDTO paginationDTO)
+        {
+            var queryable = context.Companies.AsQueryable();//making queries to specific type
+            await HttpContext.InsertPaginationParametersInResponse(queryable, paginationDTO.RecordsPerPage);
+
+            return await queryable.Paginate(paginationDTO).ToListAsync();
         }
 
         [HttpPost]
