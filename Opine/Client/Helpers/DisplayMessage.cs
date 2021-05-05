@@ -15,14 +15,14 @@ namespace Opine.Client.Helpers
             this.js = js;
         }
 
-        private async ValueTask DisplayErrorMessage(string message)
+        public async ValueTask DisplayErrorMessage(string message)
         {
             await DoDisplayMessage("Error", message, "error");
         }
 
-        private async ValueTask DisplaySuccessMessage(string message)
+        public async ValueTask DisplaySuccessMessage(string message)
         {
-            await DoDisplayMessage("Success", message, "success");
+            await DoDisplayMessage("Success", message, "error");
         }
 
         private async ValueTask DoDisplayMessage(string title, string message, string messageType)
