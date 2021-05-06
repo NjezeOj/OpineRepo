@@ -8,6 +8,18 @@ namespace Opine.Client.Helpers
 {
     public static class IHttpServiceExtensionMethod
     {
+        public static async Task<T> GetHelper<T>(this IHttpService httpService, string baseURL)
+        {
+            var response = await httpService.Get<T>(baseURL);
+
+
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+
+            return response.Response;
+        }
         public static async Task<PaginatedResponse<T>> GetHelper<T>(this IHttpService httpService, string baseURL, PaginationDTO paginationDTO)
         {
             string newURL;
