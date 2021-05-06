@@ -10,7 +10,7 @@ namespace Opine.Client.Helpers
     {
         public static async Task<PaginatedResponse<T>> GetHelper<T>(this IHttpService httpService, string baseURL, PaginationDTO paginationDTO)
         {
-            string newURL = "";
+            string newURL;
 
             if (baseURL.Contains("?"))
             {
