@@ -42,7 +42,7 @@ namespace Opine.Server.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                return BuildToken(model);
+                return await BuildToken(model);
             }
             else
             {
@@ -58,7 +58,7 @@ namespace Opine.Server.Controllers
            
             if (result.Succeeded)
             {
-                return BuildToken(loginInfo);
+                return await BuildToken(loginInfo);
             }
             else
             {
@@ -66,7 +66,7 @@ namespace Opine.Server.Controllers
             }
         }
 
-        private UserToken BuildToken(UserInfo userinfo)
+        private async Task<UserToken> BuildToken(UserInfo userinfo)
         {
             
             var claims = new List<Claim>()
@@ -76,7 +76,10 @@ namespace Opine.Server.Controllers
                 
             };
 
-           
+            var identityUser = await _userManager.FindByEmailAsync(userinfo.Email);
+            var claimsDB = await _userManager.GetClaimsAsync(identityUser); //this is a list of claims
+
+            claims.AddRange(claimsDB); //if a user has the admin role the info will be received in the JWT
 
             //configuring credentials used to sign in our jwt 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
