@@ -27,7 +27,7 @@ namespace Opine.Client.Repository
         }
 
         public async Task AssignRole(EditRoleDTO editRoleDTO)
-        {
+        { 
             var response = await httpService.Post($"{baseURL}/assignRole", editRoleDTO);
             if (!response.Success)
             {
@@ -37,7 +37,7 @@ namespace Opine.Client.Repository
 
         public async Task RemoveRole(EditRoleDTO editRoleDTO)
         {
-            var response = await httpService.Post($"{baseURL}/assignRole", editRoleDTO);
+            var response = await httpService.Post($"{baseURL}/removeRole", editRoleDTO);
             if (!response.Success)
             {
                 throw new ApplicationException(await response.GetBody());

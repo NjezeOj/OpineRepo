@@ -37,6 +37,7 @@
 
         await userRepository.AssignRole(new EditRoleDTO() { RoleName = selectedRole, UserId = UserId });
         await displayMessage.DisplaySuccessMessage("Role Assigned");
+        
     }
 
     private async Task RemoveRole()

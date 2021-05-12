@@ -22,7 +22,7 @@ namespace Opine.Client.Helpers
 
         public async ValueTask DisplaySuccessMessage(string message)
         {
-            await DoDisplayMessage("Success", message, "error");
+            await DoDisplayMessage("Success", message, "success");
         }
 
         private async ValueTask DoDisplayMessage(string title, string message, string messageType)
