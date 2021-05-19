@@ -1,0 +1,25 @@
+﻿<EditForm Model="Token" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label>E-Mail:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="@Token.Email" />
+            <ValidationMessage For="@(() => Token.Email)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>CompanyId:</label>
+        <div>
+            <InputNumber class="form-control" @bind-Value="@Token.CompanyId" />
+            <ValidationMessage For="@(() => Token.CompanyId)" />
+        </div>
+    </div>
+
+    <button class="btn btn-success" type="submit">Save Changes</button>
+</EditForm>
+
+@code {
+    [Parameter] public Token Token { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+}
