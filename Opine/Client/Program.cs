@@ -35,6 +35,7 @@ namespace Opine.Client
             services.AddScoped<IAccountsRepository, AccountsRepository>();
             services.AddScoped<IDisplayMessage, DisplayMessage>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddAuthorizationCore();
 
             services.AddScoped<JWTAuthenticationStateProvider>();

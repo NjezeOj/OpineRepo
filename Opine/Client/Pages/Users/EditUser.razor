@@ -1,6 +1,11 @@
 ﻿@page "/users/edit/{userId}"
 @inject IUserRepository userRepository
-@inject IDisplayMessage displayMessage 
+@inject IDisplayMessage displayMessage
+@inject NavigationManager navigationManager
+
+
+@using System.Threading;
+
 
 <h3>EditUser</h3>
 
@@ -29,15 +34,16 @@
 
     private async Task AssignRole()
     {
-        if(selectedRole == "0")
+        if (selectedRole == "0")
         {
             await displayMessage.DisplayErrorMessage("You must select a role");
             return;
         }
 
-        await userRepository.AssignRole(new EditRoleDTO() { RoleName = selectedRole, UserId = UserId });
+        //await userRepository.AssignRole(new EditRoleDTO() { RoleName = selectedRole, UserId = UserId });
         await displayMessage.DisplaySuccessMessage("Role Assigned");
-        
+        //navigationManager.NavigateTo("users");
+
     }
 
     private async Task RemoveRole()
@@ -48,7 +54,7 @@
             return;
         }
 
-        await userRepository.RemoveRole(new EditRoleDTO() { RoleName = selectedRole, UserId = UserId });
+        //await userRepository.RemoveRole(new EditRoleDTO() { RoleName = selectedRole, UserId = UserId });
         await displayMessage.DisplaySuccessMessage("Role Removed");
     }
 }
