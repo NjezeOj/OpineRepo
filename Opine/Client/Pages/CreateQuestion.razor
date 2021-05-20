@@ -1,11 +1,47 @@
 ﻿@page "/question/create"
+@inject IUserRepository userRepository
+@inject TestService testService
 
 <QuestionForm Question="question" OnValidSubmit="Create"/>
+
+
 @code {
+    List<UserDTO> Users;
+    private string identityName;
+    private string userName;
     private Question question = new Question();
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Users = await userRepository.GetUsers();
+        await GetUser();
+    }
+
+    //userInfo.CompanyId = Companies.Where(c => c.CompanyName == userInfo.Company).Select(c => c.Id).FirstOrDefault();
 
     private void Create()
     {
-        
+
+    }
+
+    private async Task GetUser()
+    {
+
+        var authState = await AuthenticationState;
+        var user = authState.User;
+        identityName = user.Identity.Name;
+        question.UploadTime = DateTime.Now;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            question.QuestionUserName = Users.Where(u => u.Email == identityName).Select(u => u.CustomUserName).FirstOrDefault();
+            Console.WriteLine("quesusername");
+            Console.WriteLine(question.QuestionUserName);
+
+            Console.WriteLine("time");
+            Console.WriteLine(question.UploadTime);
+        }
+
     }
 }

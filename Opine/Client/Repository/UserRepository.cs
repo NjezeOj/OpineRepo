@@ -21,6 +21,11 @@ namespace Opine.Client.Repository
             return await httpService.GetHelper<List<UserDTO>>(baseURL, paginationDTO);
         }
 
+        public async Task<List<UserDTO>> GetUsers()
+        {
+            return await httpService.GetHelper<List<UserDTO>>($"{baseURL}/users");
+        }
+
         public async Task<List<RoleDTO>> GetRoles()
         {
             return await httpService.GetHelper<List<RoleDTO>>($"{baseURL}/roles");

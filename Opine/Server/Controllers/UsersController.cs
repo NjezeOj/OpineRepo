@@ -15,7 +15,7 @@ namespace Opine.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController: ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly ApplicationDbContext context;
         private readonly UserManager<ApplicationUser> userManager;
@@ -32,7 +32,17 @@ namespace Opine.Server.Controllers
             await HttpContext.InsertPaginationParametersInResponse(queryable, paginationDTO.RecordsPerPage);
 
             return await queryable.Paginate(paginationDTO)
-                .Select( x => new UserDTO { Email = x.Email, UserId = x.Id}).ToListAsync();
+                .Select(x => new UserDTO { Email = x.Email, UserId = x.Id, CustomUserName = x.CustomUserName }).ToListAsync();
+        }
+
+        [HttpGet("users")]
+        public async Task<ActionResult<List<UserDTO>>> GetUser()
+        {
+            var queryable = context.Users.AsQueryable();
+            return await queryable
+                .Select(x => new UserDTO { Email = x.Email, UserId = x.Id, CustomUserName = x.CustomUserName }).ToListAsync();
+
+
         }
 
         [HttpGet("roles")]

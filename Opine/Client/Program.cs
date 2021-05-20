@@ -11,6 +11,7 @@ using Opine.Client.Helpers;
 using Opine.Client.Repository;
 using Microsoft.AspNetCore.Components.Authorization;
 using Opine.Client.Auth;
+using Opine.Client.Helpers.StateManagement;
 
 namespace Opine.Client
 {
@@ -36,6 +37,7 @@ namespace Opine.Client
             services.AddScoped<IDisplayMessage, DisplayMessage>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
+            services.AddSingleton<TestService, TestService>();
             services.AddAuthorizationCore();
 
             services.AddScoped<JWTAuthenticationStateProvider>();

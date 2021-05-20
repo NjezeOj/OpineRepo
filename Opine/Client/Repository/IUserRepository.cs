@@ -11,6 +11,7 @@ namespace Opine.Client.Repository
         Task AssignRole(EditRoleDTO editRoleDTO);
         Task<List<RoleDTO>> GetRoles();
         Task<PaginatedResponse<List<UserDTO>>> GetUsers(PaginationDTO paginationDTO);
+        Task<List<UserDTO>> GetUsers();
         Task RemoveRole(EditRoleDTO editRoleDTO);
     }
 }
