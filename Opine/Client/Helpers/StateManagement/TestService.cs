@@ -7,6 +7,9 @@ namespace Opine.Client.Helpers.StateManagement
 {
     public class TestService
     {
-        public DateTime timeNow { get; set; }
+        public double Seconds { get; set; }
+        public double Minutes { get; set; }
+        public double Hours { get; set; }
+        public double Days { get; set; }
     }
 }

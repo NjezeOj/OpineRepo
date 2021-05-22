@@ -1,15 +1,21 @@
 ﻿@page "/question/create"
 @inject IUserRepository userRepository
 @inject TestService testService
+@inject IQuestionRepository questionRepository
 
+@*<p> time now : @testService.Days:@testService.Hours:@testService.Minutes:@testService.Seconds</p>*@
 <QuestionForm Question="question" OnValidSubmit="Create"/>
 
 
 @code {
     List<UserDTO> Users;
     private string identityName;
-    private string userName;
+    //private string userName;
     private Question question = new Question();
+    DateTime launchDate = new DateTime(2021, 5, 20, 3, 0, 0);
+    DateTime now = DateTime.Now;
+
+    //TimeSpan ts = DateTime.Now - new DateTime(2021, 5, 20, 3, 0, 0);
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -20,27 +26,55 @@
 
     //userInfo.CompanyId = Companies.Where(c => c.CompanyName == userInfo.Company).Select(c => c.Id).FirstOrDefault();
 
-    private void Create()
+    private async Task Create()
     {
+        try
+        {
+            await questionRepository.CreateQuestion(question);
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
 
     }
 
-    private async Task GetUser()
+    @*private void Create()
     {
+        Console.WriteLine(question.Ques);
+        Console.WriteLine(question.A);
+        Console.WriteLine(question.B);
+        Console.WriteLine(question.C);
+        Console.WriteLine(question.D);
+        Console.WriteLine(question.CompanyId);
+        Console.WriteLine(question.QuestionUserName);
+        Console.WriteLine(question.UploadTime);
+    }*@
 
-        var authState = await AuthenticationState;
-        var user = authState.User;
-        identityName = user.Identity.Name;
-        question.UploadTime = DateTime.Now;
 
-        if (user.Identity.IsAuthenticated)
-        {
-            question.QuestionUserName = Users.Where(u => u.Email == identityName).Select(u => u.CustomUserName).FirstOrDefault();
-            Console.WriteLine("quesusername");
-            Console.WriteLine(question.QuestionUserName);
+private async Task GetUser()
+{
 
-            Console.WriteLine("time");
-            Console.WriteLine(question.UploadTime);
+    var authState = await AuthenticationState;
+    var user = authState.User;
+    identityName = user.Identity.Name;
+    question.UploadTime = DateTime.Now;
+
+    if (user.Identity.IsAuthenticated)
+    {
+        question.QuestionUserName = Users.Where(u => u.Email == identityName).Select(u => u.CustomUserName).FirstOrDefault();
+        question.CompanyId = Users.Where(u => u.Email == identityName).Select(u => u.CompanyId).FirstOrDefault();
+       @* Console.WriteLine("quesusername");
+        Console.WriteLine(question.QuestionUserName);
+
+        Console.WriteLine("time");
+        Console.WriteLine(question.UploadTime);
+
+            testService.Seconds = ts.Seconds;
+            testService.Minutes = ts.Minutes;
+            testService.Hours = ts.Hours;
+            testService.Days = ts.Days;*@
         }
 
     }
