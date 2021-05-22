@@ -1,4 +1,5 @@
 ﻿using Opine.Client.Helpers;
+using Opine.Shared.DTOS;
 using Opine.Shared.Entities;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,11 @@ namespace Opine.Client.Repository
             {
                 throw new ApplicationException(await response.GetBody());
             }
+        }
+
+        public async Task<PaginatedResponse<List<Question>>> GetQuestionsyId(PaginationDTO paginationDTO, int id)
+        {
+            return await httpService.GetHelper<List<Question>>(baseURL, paginationDTO, id);
         }
     }
 }

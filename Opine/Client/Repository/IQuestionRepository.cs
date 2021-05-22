@@ -1,4 +1,5 @@
-﻿using Opine.Shared.Entities;
+﻿using Opine.Shared.DTOS;
+using Opine.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Opine.Client.Repository
     {
         Task CreateQuestion(Question quest);
         Task<List<Question>> GetQuestions();
+        Task<PaginatedResponse<List<Question>>> GetQuestionsyId(PaginationDTO paginationDTO, int id);
     }
 }
