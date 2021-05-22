@@ -40,7 +40,7 @@ namespace Opine.Server.Controllers
         {
             var queryable = context.Users.AsQueryable();
             return await queryable
-                .Select(x => new UserDTO { Email = x.Email, UserId = x.Id, CustomUserName = x.CustomUserName }).ToListAsync();
+                .Select(x => new UserDTO { Email = x.Email, UserId = x.Id, CustomUserName = x.CustomUserName, CompanyId = x.CompanyId }).ToListAsync();
 
 
         }
