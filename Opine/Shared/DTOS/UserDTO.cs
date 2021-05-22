@@ -9,5 +9,6 @@ namespace Opine.Shared.DTOS
         public string UserId { get; set; }
         public string Email { get; set; }
         public string CustomUserName { get; set; }
+        public int CompanyId { get; set; }
     }
 }
