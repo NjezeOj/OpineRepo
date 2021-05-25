@@ -13,13 +13,13 @@
 
     <div class="container">
         <h2>Poll Statistics</h2>
-        <div>
+        <div class="d-flex justify-content-center">
             <GenericList List="Questionss">
                 <WholeListTemplate>
                     @foreach (var question in Questionss)
                     {
                         ts = questionService.TimeCreated(question.UploadTime);
-                        <div class="d-flex justify-content-around dashcontcolor questionbg align-items-center py-3 mt-5">
+                        <div class="d-flex justify-content-around dashcontcolor questionbg align-items-center w-75 py-3 mt-3">
                             <div>
                                 <h2>@question.Ques</h2>
                                 <p>@question.QuestionUserName</p>
@@ -29,7 +29,7 @@
                                 <p> @ts.Days:@ts.Hours:@ts.Minutes:@ts.Seconds</p>
                             </div>
                             <div id="flex-container" class="create-survey">
-                                <a class="btn btn-info" href="/question/opinionpage/@question.Id">Select Opinion</a>
+                                <a class="btn btn-primary" href="/question/opinionpage/@question.Id">Select Opinion</a>
                             </div>
                         </div>
                     }

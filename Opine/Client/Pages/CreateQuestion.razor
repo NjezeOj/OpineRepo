@@ -3,19 +3,17 @@
 @inject QuestionService testService
 @inject IQuestionRepository questionRepository
 
-@*<p> time now : @testService.Days:@testService.Hours:@testService.Minutes:@testService.Seconds</p>*@
 <QuestionForm Question="question" OnValidSubmit="Create"/>
 
 
 @code {
     List<UserDTO> Users;
     private string identityName;
-    //private string userName;
     private Question question = new Question();
     DateTime launchDate = new DateTime(2021, 5, 20, 3, 0, 0);
     DateTime now = DateTime.Now;
 
-    //TimeSpan ts = DateTime.Now - new DateTime(2021, 5, 20, 3, 0, 0);
+ 
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
     protected override async Task OnInitializedAsync()

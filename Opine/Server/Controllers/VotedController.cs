@@ -9,27 +9,26 @@ using System.Threading.Tasks;
 namespace Opine.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class TokenController :  ControllerBase
+    [Route("api/[Controller]")]
+    public class VotedController : ControllerBase
     {
         private readonly ApplicationDbContext context;
-
-        public TokenController(ApplicationDbContext context)
+        public VotedController(ApplicationDbContext context)
         {
             this.context = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<Token>>> Get()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<List<Voted>>> Get(int id)
         {
-            return await context.Tokens.ToListAsync();
+            var queryable = context.Votes.Where(q => q.Question.CompanyId == id).AsQueryable();
+            return await queryable.ToListAsync();
         }
 
-        //write htt method to get token based on CompanyId
         [HttpPost]
-        public async Task<ActionResult> Post(Token token)
+        public async Task<ActionResult> Post(Voted voted)
         {
-            context.Add(token);
+            context.Add(voted);
             await context.SaveChangesAsync();
             return Ok();
         }

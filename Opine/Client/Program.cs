@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Radzen;
 using Opine.Client.Helpers;
 using Opine.Client.Repository;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -23,6 +24,12 @@ namespace Opine.Client
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddSingleton( new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+            builder.Services.AddScoped<DialogService>();
+            builder.Services.AddScoped<NotificationService>();
+            builder.Services.AddScoped<TooltipService>();
+            builder.Services.AddScoped<ContextMenuService>();
+
             ConfigureServices(builder.Services);
 
             await builder.Build().RunAsync();
@@ -37,7 +44,10 @@ namespace Opine.Client
             services.AddScoped<IDisplayMessage, DisplayMessage>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
+            services.AddScoped<IVotedRepository, VotedRepository>();
+            services.AddScoped<IPollRepository, PollRepository>();
             services.AddSingleton<QuestionService, QuestionService>();
+            
             services.AddAuthorizationCore();
 
             services.AddScoped<JWTAuthenticationStateProvider>();

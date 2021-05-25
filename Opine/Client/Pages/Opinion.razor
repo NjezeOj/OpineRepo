@@ -1,0 +1,254 @@
+﻿@page  "/question/opinionpage/{QuestionId:int}"
+@inject IQuestionRepository questionRepository
+@inject IUserRepository userRepository
+@inject IVotedRepository votedRepository
+@inject IPollRepository pollRepository 
+@inject NavigationManager NavigationManager
+@inject NotificationService NotificationService
+
+<section>
+    <div id="flex-container" class="create-survey">
+        <button>Surveys</button>
+    </div>
+
+
+    <div class="container">
+        <h2>Voting Options</h2>
+        <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-around questionbg align-items-center py-3 mt-3 w-50">
+                <div>
+                    <h2>@question.Ques</h2>
+                    <p>by @question.QuestionUserName</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-5 mt-2">
+            <h2>Options</h2>
+            <div class="row">
+                <div class="col-xl-6">
+                    <RadzenRadioButtonList @bind-Value=@value TValue="int" Orientation="Orientation.Vertical" Change=@((args) => OnChange(args, "RadioButtonList with vertical orientation"))>
+                        <Items>
+                            @if (question.A == null)
+                            {
+
+                            }
+                            else
+                            {
+                                <RadzenRadioButtonListItem Text=@question.A Value="1" />
+                            }
+
+                            @if (question.B == null)
+                            {
+
+                            }
+                            else
+                            {
+                                <RadzenRadioButtonListItem Text=@question.B Value="2" />
+                            }
+
+                            @if (question.C == null)
+                            {
+
+                            }
+                            else
+                            {
+                                <RadzenRadioButtonListItem Text=@question.C Value="3" />
+                            }
+
+                            @if (question.D == null)
+                            {
+
+                            }
+                            else
+                            {
+                                <RadzenRadioButtonListItem Text=@question.D Value="4" />
+                            }
+                        </Items>
+                    </RadzenRadioButtonList>
+                </div>
+            </div>
+            <RadzenButton Text="Submit" Style="margin-bottom: 20px; width: 200px"
+                          ButtonStyle="ButtonStyle.Success"
+                          Click="ShowNotification" />
+        </div>        
+    </div>
+</section>
+
+
+@code {
+    int value = 0;
+    List<UserDTO> Users;
+    List<Poll> Polls;
+    private Question question = new Question();
+    private Poll poll = new Poll();
+    private Poll existingPoll = new Poll();
+    private Voted voted = new Voted();
+    private int CompanyId;
+    public string UserId;
+    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 50 };
+
+    [Parameter] public int QuestionId { get; set; }
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
+
+    void OnChange(int? value, string name)
+    {
+        Console.WriteLine($"{name} value changed to {value}");
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Users = await userRepository.GetUsers();
+            await GetUser();
+            await LoadQuestions();
+            await LoadPolls();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task GetUser()
+    {
+
+        var authState = await AuthenticationState;
+        var user = authState.User;
+        var identityName = user.Identity.Name;
+
+
+        if (user.Identity.IsAuthenticated)
+        {
+            CompanyId = Users.Where(u => u.Email == identityName).Select(u => u.CompanyId).FirstOrDefault();
+            UserId = Users.Where(u => u.Email == identityName).Select(u => u.UserId).FirstOrDefault();
+        }
+
+    }
+
+    private async Task LoadQuestions()
+    {
+        var paginatedResponse = await questionRepository.GetQuestionsyId(paginationDTO, CompanyId);
+        question = paginatedResponse.Response.Where(q => q.Id == QuestionId).FirstOrDefault();
+
+    }
+
+    private async Task LoadPolls()
+    {
+        Polls = await pollRepository.GetPollsById(CompanyId);
+        //Polls = await pollRepository.GetPoll();
+        //check if QuestionId == questionId
+        existingPoll = Polls.Where(p => p.QuestionId == QuestionId).FirstOrDefault();
+        Console.WriteLine(Polls.Count);
+    }
+
+
+    void ShowNotification()
+    {
+
+        if (existingPoll == null)
+        {
+            poll.QuestionId = QuestionId;
+            if (value == 1)
+            {
+                poll.A = 1;
+                poll.B = 0;
+                poll.C = 0;
+                poll.D = 0;
+            }
+            if (value == 2)
+            {
+                poll.A = 0;
+                poll.B = 1;
+                poll.C = 0;
+                poll.D = 0;
+            }
+            if (value == 3)
+            {
+                poll.A = 0;
+                poll.B = 0;
+                poll.C = 1;
+                poll.D = 0;
+            }
+            if (value == 4)
+            {
+                poll.A = 0;
+                poll.B = 0;
+                poll.C = 0;
+                poll.D = 1;
+            }
+
+            //await pollRepository.CreatePoll(poll);
+
+            @*Console.WriteLine("New Voted");
+            Console.WriteLine(voted.Completed);
+            Console.WriteLine(voted.QuestionId);
+            Console.WriteLine(voted.UserId);
+
+
+            Console.WriteLine("New Poll");
+            Console.WriteLine(poll.A);
+            Console.WriteLine(poll.B);
+            Console.WriteLine(poll.C);
+            Console.WriteLine(poll.D);
+            Console.WriteLine(poll.QuestionId);*@
+
+
+        }
+        else {
+
+            if (value == 1)
+            {
+                poll.A += 1;
+
+            }
+            if (value == 2)
+            {
+
+                poll.B += 1;
+
+
+            }
+            if (value == 3)
+            {
+
+                poll.C += 1;
+
+            }
+            if (value == 4)
+            {
+
+                poll.D += 1;
+            }
+
+           @* Console.WriteLine("existing Poll");
+            Console.WriteLine(poll.A);
+            Console.WriteLine(poll.B);
+            Console.WriteLine(poll.C);
+            Console.WriteLine(poll.D);*@
+
+        }
+
+        voted.Completed = true;
+        voted.QuestionId = QuestionId;
+        voted.UserId = UserId;
+
+        //await votedRepository.CreateVoted(voted);
+        var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Successful Submission", Detail = "", Duration = 4000 };
+        NotificationService.Notify(message);
+        NavigationManager.NavigateTo("questions");
+
+    }
+
+
+
+
+
+
+
+
+}

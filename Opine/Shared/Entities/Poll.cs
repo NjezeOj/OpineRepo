@@ -13,6 +13,7 @@ namespace Opine.Shared.Entities
         public int D { get; set; }
         public int QuestionId { get; set; }
         public Question Question { get; set; }
+        
 
     }
 }
