@@ -38,42 +38,24 @@
 
     }
 
-    @*private void Create()
+
+    private async Task GetUser()
     {
-        Console.WriteLine(question.Ques);
-        Console.WriteLine(question.A);
-        Console.WriteLine(question.B);
-        Console.WriteLine(question.C);
-        Console.WriteLine(question.D);
-        Console.WriteLine(question.CompanyId);
-        Console.WriteLine(question.QuestionUserName);
-        Console.WriteLine(question.UploadTime);
-    }*@
 
+        var authState = await AuthenticationState;
+        var user = authState.User;
+        identityName = user.Identity.Name;
+        question.UploadTime = DateTime.Now;
 
-private async Task GetUser()
-{
-
-    var authState = await AuthenticationState;
-    var user = authState.User;
-    identityName = user.Identity.Name;
-    question.UploadTime = DateTime.Now;
-
-    if (user.Identity.IsAuthenticated)
-    {
-        question.QuestionUserName = Users.Where(u => u.Email == identityName).Select(u => u.CustomUserName).FirstOrDefault();
-        question.CompanyId = Users.Where(u => u.Email == identityName).Select(u => u.CompanyId).FirstOrDefault();
-       @* Console.WriteLine("quesusername");
-        Console.WriteLine(question.QuestionUserName);
-
-        Console.WriteLine("time");
-        Console.WriteLine(question.UploadTime);
-
-            testService.Seconds = ts.Seconds;
-            testService.Minutes = ts.Minutes;
-            testService.Hours = ts.Hours;
-            testService.Days = ts.Days;*@
+        if (user.Identity.IsAuthenticated)
+        {
+            question.QuestionUserName = Users.Where(u => u.Email == identityName).Select(u => u.CustomUserName).FirstOrDefault();
+            question.CompanyId = Users.Where(u => u.Email == identityName).Select(u => u.CompanyId).FirstOrDefault();
+     
         }
 
     }
+
+
 }
+
