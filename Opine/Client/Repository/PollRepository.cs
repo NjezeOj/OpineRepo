@@ -34,6 +34,13 @@ namespace Opine.Client.Repository
             return await httpService.GetHelper<List<Poll>>(baseURL, id);
         }
 
-
+        public async Task UpdatePoll(Poll poll)
+        {
+            var response = await httpService.Put(baseURL, poll);
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+        }
     }
 }

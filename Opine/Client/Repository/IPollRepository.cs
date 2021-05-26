@@ -11,5 +11,6 @@ namespace Opine.Client.Repository
         Task CreatePoll(Poll poll);
         Task<List<Poll>> GetPoll();
         Task<List<Poll>> GetPollsById(int id);
+        Task UpdatePoll(Poll poll);
     }
 }

@@ -40,5 +40,13 @@ namespace Opine.Server.Controllers
             await context.SaveChangesAsync();
             return Ok();
         }
+
+        [HttpPut]
+        public async Task<ActionResult> Put(Poll poll)
+        {
+            context.Attach(poll).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }
