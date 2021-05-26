@@ -1,35 +1,84 @@
 ﻿@page "/responsepage"
 @inject IPollRepository pollRepository
-<h3>ResponsePage</h3>
-<div class="row">
-    <div class="col-md-6 col-sm-12 p-4">
-        <RadzenChart>
-            <RadzenPieSeries Data="@revenue" Title="Revenue" CategoryProperty="Quarter" ValueProperty="Revenue" />
-        </RadzenChart>
+@inject IUserRepository userRepository
+
+
+@if (Polls == null)
+{
+    <RadzenProgressBar class="mt-5" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="margin-bottom: 20px" />
+}
+else{
+    <h3>ResponsePage</h3>
+    <div class="row">
+        <div class="col-md-6 col-sm-12 p-4">
+            <RadzenChart>
+                <RadzenPieSeries Data="@Polls" Title="Count" CategoryProperty="Option" ValueProperty="Count" />
+            </RadzenChart>
+        </div>
     </div>
-</div>
+}
+
 
 @code {
-    List<Poll> polls;
-    private Poll poll = new Poll();
+    List<Poll> Polls;
+    List<Poll> CompanyPolls;
+    List<UserDTO> Users;
+    private int CompanyId;
+    private string UserId;
+    [Parameter] public int QuestionId { get; set; }
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
 
     protected override async Task OnInitializedAsync()
     {
-        polls = await pollRepository.GetPollsById(1);
+        try
+        {
+            Users = await userRepository.GetUsers();
+            await GetUser();
+            await LoadPolls();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 
+
+
+    private async Task GetUser()
+    {
+
+        var authState = await AuthenticationState;
+        var user = authState.User;
+        var identityName = user.Identity.Name;
+
+
+        if (user.Identity.IsAuthenticated)
+        {
+            CompanyId = Users.Where(u => u.Email == identityName).Select(u => u.CompanyId).FirstOrDefault();
+            UserId = Users.Where(u => u.Email == identityName).Select(u => u.UserId).FirstOrDefault();
+        }
+
+    }
+
+    private async Task LoadPolls()
+    {
+        CompanyPolls = await pollRepository.GetPollsById(CompanyId);
+        Polls = CompanyPolls.Where(c => c.QuestionId == 1).ToList();
+    }
 
     class DataItem
     {
         public string Quarter { get; set; }
-        public double Revenue { get; set; }
+        public int Revenue { get; set; }
     }
 
     DataItem[] revenue = new DataItem[] {
         new DataItem
         {
             Quarter = "A",
-            Revenue = 30000
+            Revenue = 10000
         },
         new DataItem
         {
