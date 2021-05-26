@@ -1,33 +1,104 @@
 ﻿@page "/responses"
 
+@inject IUserRepository userRepository
+@inject NavigationManager navigationManager
+@inject IQuestionRepository questionRepository
+@inject QuestionService questionService
 <section>
     <div id="flex-container" class="create-survey">
-        <button>Survey</button>
+        <button>Polls</button>
     </div>
 
-    
+    <Pagination CurrentPage="@paginationDTO.Page" TotalAmountPages="totalAmountPages"
+                SelectedPage="SelectedPage" />
+
     <div class="container">
-        <h2>Responses</h2>
-        <div>
-           
-            <div class="d-flex justify-content-around dashcontcolor questionbg align-items-center py-3 mt-5">
-                    <div>
-                        <h2>Birthday Parties</h2>
-                        <p>by Chrsitopher Morgan</p>
-                    </div>
-                    <div class="d-flex flex-row">
-                        <p class="oi oi-clock pr-2 restimelogo"></p>
-                        <p>5min</p>
-                    </div>
-                    <button class="listbutton bg-dark text-white">View responses</button>
-                </div>
+        <h2>Poll Statistics</h2>
+        <div class="d-flex justify-content-center">
+            <GenericList List="Questionss">
+                <WholeListTemplate>
+                    @foreach (var question in Questionss)
+                    {
+                        ts = questionService.TimeCreated(question.UploadTime);
+                        <div class="d-flex justify-content-around dashcontcolor questionbg align-items-center w-75 py-3 mt-3">
+                            <div>
+                                <h2>@question.Ques</h2>
+                                <p>@question.QuestionUserName</p>
+                            </div>
+                            <div class="d-flex flex-row">
+                                <p class="oi oi-clock pr-2 restimelogo"></p>
+                                <p> @ts.Days:@ts.Hours:@ts.Minutes:@ts.Seconds</p>
+                            </div>
+                            <div id="flex-container" class="create-survey">
+                                <a class="btn btn-primary" href="responsepage">View Response</a>
+                            </div>
+                        </div>
+                    }
+                </WholeListTemplate>
+            </GenericList>
         </div>
     </div>
 
 </section>
 
 
-
 @code {
+    List<Question> Questionss;
+    List<UserDTO> Users;
+    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 2 };
 
+    TimeSpan ts;
+    private int totalAmountPages;
+    private Question question = new Question();
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Users = await userRepository.GetUsers();
+            await GetUser();
+            await LoadQuestions();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task GetUser()
+    {
+
+        var authState = await AuthenticationState;
+        var user = authState.User;
+        var identityName = user.Identity.Name;
+
+
+        if (user.Identity.IsAuthenticated)
+        {
+
+            question.CompanyId = Users.Where(u => u.Email == identityName).Select(u => u.CompanyId).FirstOrDefault();
+
+        }
+
+    }
+
+    private void CreatePoll()
+    {
+        navigationManager.NavigateTo("/question/create");
+    }
+
+    private async Task LoadQuestions()
+    {
+        var paginatedResponse = await questionRepository.GetQuestionsyId(paginationDTO, question.CompanyId);
+        Questionss = paginatedResponse.Response;
+        totalAmountPages = paginatedResponse.TotalAmountPages;
+    }
+
+    private async Task SelectedPage(int page)
+    {
+        paginationDTO.Page = page;
+        await LoadQuestions();
+
+    }
 }
