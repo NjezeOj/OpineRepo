@@ -2,90 +2,101 @@
 @inject IQuestionRepository questionRepository
 @inject IUserRepository userRepository
 @inject IVotedRepository votedRepository
-@inject IPollRepository pollRepository 
+@inject IPollRepository pollRepository
 @inject NavigationManager NavigationManager
 @inject NotificationService NotificationService
 
-<section>
-    <div id="flex-container" class="create-survey">
-        <button>Surveys</button>
-    </div>
-
-
-    <div class="container">
-        <h2>Voting Options</h2>
-        <div class="d-flex justify-content-center">
-            <div class="d-flex justify-content-around questionbg align-items-center py-3 mt-3 w-50">
-                <div>
-                    <h2>@question.Ques</h2>
-                    <p>by @question.QuestionUserName</p>
-                </div>
-            </div>
+@if (@question.A == null)
+{
+    <RadzenProgressBar class="mt-5" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="margin-bottom: 20px" />
+}
+else
+{
+    <section>
+        <div id="flex-container" class="create-survey">
+            <button>Surveys</button>
         </div>
 
-        <div class="px-5 mt-2">
-            <h2>Options</h2>
-            <div class="row">
-                <div class="col-xl-6">
-                    <RadzenRadioButtonList @bind-Value=@value TValue="int" Orientation="Orientation.Vertical" Change=@((args) => OnChange(args, "RadioButtonList with vertical orientation"))>
-                        <Items>
-                            @if (question.A == null)
-                            {
 
-                            }
-                            else
-                            {
-                                <RadzenRadioButtonListItem Text=@question.A Value="1" />
-                            }
-
-                            @if (question.B == null)
-                            {
-
-                            }
-                            else
-                            {
-                                <RadzenRadioButtonListItem Text=@question.B Value="2" />
-                            }
-
-                            @if (question.C == null)
-                            {
-
-                            }
-                            else
-                            {
-                                <RadzenRadioButtonListItem Text=@question.C Value="3" />
-                            }
-
-                            @if (question.D == null)
-                            {
-
-                            }
-                            else
-                            {
-                                <RadzenRadioButtonListItem Text=@question.D Value="4" />
-                            }
-                        </Items>
-                    </RadzenRadioButtonList>
+        <div class="container">
+            <h2>Voting Options</h2>
+            <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-around questionbg align-items-center py-3 mt-3 w-50">
+                    <div>
+                        <h2>@question.Ques</h2>
+                        <p>by @question.QuestionUserName</p>
+                    </div>
                 </div>
             </div>
-            <RadzenButton Text="Submit" Style="margin-bottom: 20px; width: 200px"
-                          ButtonStyle="ButtonStyle.Success"
-                          Click="ShowNotification" />
-        </div>        
-    </div>
-</section>
+
+            <div class="px-5 mt-2">
+                <h2>Options</h2>
+                <div class="row">
+                    <div class="col-xl-6">
+                        <RadzenRadioButtonList @bind-Value=@value TValue="int" Orientation="Orientation.Vertical" Change=@((args) => OnChange(args, "RadioButtonList with vertical orientation"))>
+                            <Items>
+                                @if (question.A == null)
+                                {
+
+                                }
+                                else
+                                {
+                                    <RadzenRadioButtonListItem Text=@question.A Value="1" />
+                                }
+
+                                @if (question.B == null)
+                                {
+
+                                }
+                                else
+                                {
+                                    <RadzenRadioButtonListItem Text=@question.B Value="2" />
+                                }
+
+                                @if (question.C == null)
+                                {
+
+                                }
+                                else
+                                {
+                                    <RadzenRadioButtonListItem Text=@question.C Value="3" />
+                                }
+
+                                @if (question.D == null)
+                                {
+
+                                }
+                                else
+                                {
+                                    <RadzenRadioButtonListItem Text=@question.D Value="4" />
+                                }
+                            </Items>
+                        </RadzenRadioButtonList>
+                    </div>
+                </div>
+                <RadzenButton Text="Submit" Style="margin-bottom: 20px; width: 200px"
+                              ButtonStyle="ButtonStyle.Success"
+                              Click="ShowNotification" />
+            </div>
+        </div>
+    </section>
+}
 
 
 @code {
     int value = 0;
     List<UserDTO> Users;
     List<Poll> Polls;
+    List<Poll> CompanyPolls;
     private Question question = new Question();
-    private Poll poll = new Poll();
-    private Poll existingPoll = new Poll();
+    private Poll pollA = new Poll();
+    private Poll pollB = new Poll();
+    private Poll pollC = new Poll();
+    private Poll pollD = new Poll();
+
     private Voted voted = new Voted();
     private int CompanyId;
-    public string UserId;
+    private string UserId;
     PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 50 };
 
     [Parameter] public int QuestionId { get; set; }
@@ -135,93 +146,168 @@
         var paginatedResponse = await questionRepository.GetQuestionsyId(paginationDTO, CompanyId);
         question = paginatedResponse.Response.Where(q => q.Id == QuestionId).FirstOrDefault();
 
+
     }
 
     private async Task LoadPolls()
     {
-        Polls = await pollRepository.GetPollsById(CompanyId);
+        CompanyPolls = await pollRepository.GetPollsById(CompanyId);
+        Polls = CompanyPolls.Where(c => c.QuestionId == QuestionId).ToList();
         //Polls = await pollRepository.GetPoll();
         //check if QuestionId == questionId
-        existingPoll = Polls.Where(p => p.QuestionId == QuestionId).FirstOrDefault();
-        Console.WriteLine(existingPoll.A);
-        Console.WriteLine(existingPoll.B);
-        Console.WriteLine(existingPoll.C);
-        Console.WriteLine(existingPoll.D);
+
+
     }
 
 
-    void ShowNotification() //private async Task
+    private async Task ShowNotification() //private async Task
     {
-
-        if (existingPoll == null)
-        {
-            poll.QuestionId = QuestionId;
-            if (value == 1)
+        //CREATING POLL
+        @*if(Polls.Count == 0)
             {
-                poll.A = 1;
-                poll.B = 0;
-                poll.C = 0;
-                poll.D = 0;
+                if (value == 1)
+                {
+                    pollA.Count = 1;
+                    pollA.Option = "A";
+                    pollA.QuestionId = QuestionId;
+                    Console.WriteLine("A object");
+                    Console.WriteLine(pollA.Count);
+                    Console.WriteLine(pollA.Option);
+                    Console.WriteLine(pollA.QuestionId);
+                    await pollRepository.CreatePoll(pollA);
+
+
+                    pollB.Count = 0;
+                    pollB.Option = "B";
+                    pollB.QuestionId = QuestionId;
+                    Console.WriteLine("B object");
+                    Console.WriteLine(pollB.Count);
+                    Console.WriteLine(pollB.Option);
+                    Console.WriteLine(pollB.QuestionId);
+                    await pollRepository.CreatePoll(pollB);
+
+                    pollC.Count = 0;
+                    pollC.Option = "C";
+                    pollC.QuestionId = QuestionId;
+                    Console.WriteLine("C object");
+                    Console.WriteLine(pollC.Count);
+                    Console.WriteLine(pollC.Option);
+                    Console.WriteLine(pollC.QuestionId);
+                    await pollRepository.CreatePoll(pollC);
+
+                    pollD.Count = 0;
+                    pollD.Option = "D";
+                    pollD.QuestionId = QuestionId;
+                    Console.WriteLine("D object");
+                    Console.WriteLine(pollD.Count);
+                    Console.WriteLine(pollD.Option);
+                    Console.WriteLine(pollD.QuestionId);
+                    await pollRepository.CreatePoll(pollD);
+                }
+                if (value == 2)
+                {
+                    pollA.Count = 0;
+                    pollA.Option = "A";
+                    pollA.QuestionId = QuestionId;
+                    await pollRepository.CreatePoll(pollA);
+
+                    pollB.Count = 1;
+                    pollB.Option = "B";
+                    pollB.QuestionId = QuestionId;
+                    await pollRepository.CreatePoll(pollB);
+
+                    pollC.Count = 0;
+                    pollC.Option = "C";
+                    pollC.QuestionId = QuestionId;
+                    await pollRepository.CreatePoll(pollC);
+
+                    pollD.Count = 0;
+                    pollD.Option = "D";
+                    pollD.QuestionId = QuestionId;
+                    await pollRepository.CreatePoll(pollD);
+                }
+                if (value == 3)
+                {
+                    pollA.Count = 0;
+                    pollA.Option = "A";
+                    pollA.QuestionId = QuestionId;
+                    await pollRepository.CreatePoll(pollA);
+
+                    pollB.Count = 0;
+                    pollB.Option = "B";
+                    pollB.QuestionId = QuestionId;
+                    await pollRepository.CreatePoll(pollB);
+
+                    pollC.Count = 1;
+                    pollC.Option = "C";
+                    pollC.QuestionId = QuestionId;
+                    await pollRepository.CreatePoll(pollC);
+
+                    pollD.Count = 0;
+                    pollD.Option = "D";
+                    pollD.QuestionId = QuestionId;
+                    await pollRepository.CreatePoll(pollD);
+                }
+                if (value == 4)
+                {
+                    pollA.Count = 0;
+                    pollA.Option = "A";
+                    pollA.QuestionId = QuestionId;
+                    await pollRepository.CreatePoll(pollA);
+
+                    pollB.Count = 0;
+                    pollB.Option = "B";
+                    pollB.QuestionId = QuestionId;
+                    await pollRepository.CreatePoll(pollB);
+
+                    pollC.Count = 0;
+                    pollC.Option = "C";
+                    pollC.QuestionId = QuestionId;
+                    await pollRepository.CreatePoll(pollC);
+
+                    pollD.Count = 1;
+                    pollD.Option = "D";
+                    pollD.QuestionId = QuestionId;
+                    await pollRepository.CreatePoll(pollD);
+                }
             }
-            if (value == 2)
+            else
             {
-                poll.A = 0;
-                poll.B = 1;
-                poll.C = 0;
-                poll.D = 0;
-            }
-            if (value == 3)
-            {
-                poll.A = 0;
-                poll.B = 0;
-                poll.C = 1;
-                poll.D = 0;
-            }
-            if (value == 4)
-            {
-                poll.A = 0;
-                poll.B = 0;
-                poll.C = 0;
-                poll.D = 1;
-            }
+                if(value == 1)
+                {
+                    pollA = Polls.Where(p => p.Option == "A").FirstOrDefault();
+                    pollA.Count += 1;
+                    await pollRepository.UpdatePoll(pollA);
+                }
+                if (value == 2)
+                {
+                    pollB = Polls.Where(p => p.Option == "B").FirstOrDefault();
+                    pollB.Count += 1;
+                    await pollRepository.UpdatePoll(pollB);
+                }
+                if (value == 3)
+                {
+                    pollC = Polls.Where(p => p.Option == "C").FirstOrDefault();
+                    pollC.Count += 1;
+                    await pollRepository.UpdatePoll(pollC);
+                }
+                if (value == 4)
+                {
+                    pollD = Polls.Where(p => p.Option == "D").FirstOrDefault();
+                    pollD.Count += 1;
+                    await pollRepository.UpdatePoll(pollD);
+                }
 
-            //await pollRepository.CreatePoll(poll);
+            }*@
 
-        }
-        else {
+        //UPDATING SUBMITTING VOTING LOGIC
 
-            if (value == 1)
-            {
-                existingPoll.A += 1;
-
-            }
-            if (value == 2)
-            {
-
-                existingPoll.B += 1;
-
-
-            }
-            if (value == 3)
-            {
-
-                existingPoll.C += 1;
-
-            }
-            if (value == 4)
-            {
-
-                existingPoll.D += 1;
-            }
-
-            //await pollRepository.UpdatePoll(existingPoll);
-        }
 
         voted.Completed = true;
         voted.QuestionId = QuestionId;
         voted.UserId = UserId;
 
-        //await votedRepository.CreateVoted(voted);
+        await votedRepository.CreateVoted(voted);
         var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Successful Submission", Detail = "", Duration = 4000 };
         NotificationService.Notify(message);
         NavigationManager.NavigateTo("questions");
