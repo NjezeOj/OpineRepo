@@ -143,11 +143,14 @@
         //Polls = await pollRepository.GetPoll();
         //check if QuestionId == questionId
         existingPoll = Polls.Where(p => p.QuestionId == QuestionId).FirstOrDefault();
-        Console.WriteLine(Polls.Count);
+        Console.WriteLine(existingPoll.A);
+        Console.WriteLine(existingPoll.B);
+        Console.WriteLine(existingPoll.C);
+        Console.WriteLine(existingPoll.D);
     }
 
 
-    void ShowNotification()
+    void ShowNotification() //private async Task
     {
 
         if (existingPoll == null)
@@ -184,53 +187,34 @@
 
             //await pollRepository.CreatePoll(poll);
 
-            @*Console.WriteLine("New Voted");
-            Console.WriteLine(voted.Completed);
-            Console.WriteLine(voted.QuestionId);
-            Console.WriteLine(voted.UserId);
-
-
-            Console.WriteLine("New Poll");
-            Console.WriteLine(poll.A);
-            Console.WriteLine(poll.B);
-            Console.WriteLine(poll.C);
-            Console.WriteLine(poll.D);
-            Console.WriteLine(poll.QuestionId);*@
-
-
         }
         else {
 
             if (value == 1)
             {
-                poll.A += 1;
+                existingPoll.A += 1;
 
             }
             if (value == 2)
             {
 
-                poll.B += 1;
+                existingPoll.B += 1;
 
 
             }
             if (value == 3)
             {
 
-                poll.C += 1;
+                existingPoll.C += 1;
 
             }
             if (value == 4)
             {
 
-                poll.D += 1;
+                existingPoll.D += 1;
             }
 
-           @* Console.WriteLine("existing Poll");
-            Console.WriteLine(poll.A);
-            Console.WriteLine(poll.B);
-            Console.WriteLine(poll.C);
-            Console.WriteLine(poll.D);*@
-
+            //await pollRepository.UpdatePoll(existingPoll);
         }
 
         voted.Completed = true;
@@ -243,12 +227,6 @@
         NavigationManager.NavigateTo("questions");
 
     }
-
-
-
-
-
-
 
 
 }
