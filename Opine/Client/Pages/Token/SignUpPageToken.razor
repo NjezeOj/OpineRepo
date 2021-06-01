@@ -1,11 +1,12 @@
-﻿@page "/loginpage"
+﻿@page "/loginpage/{TokenId:Guid}"
 @inject IAccountsRepository accountsRepository
 @inject ICompanyRepository companyRepository
+@inject ITokenRepository tokenRepository
 @inject ILoginService loginService
 @inject NavigationManager navigationManager
 
 <EditForm Model="loginInfo" OnValidSubmit="Login">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
     <div class="login div1">
         <div class="logo1div">
             <img class="logo1" src="Images/loginwork.svg" />
@@ -35,10 +36,10 @@
             <div class="form-group">
                 <div>
                     <InputText id="s-useremail" class="form-control border-secondary" placeholder="Email" @bind-Value="@loginInfo.Email" />
-                    <ValidationMessage For="@(() => loginInfo.Email)"/>
+                    <ValidationMessage For="@(() => loginInfo.Email)" />
                 </div>
             </div>
-        
+
             <div class="form-group">
                 <div>
                     <InputPassword @bind-Value="@loginInfo.Password" />
@@ -50,7 +51,6 @@
                 <button type="submit" class="loginsign logbutt">Login</button>
                 <button href="/company/create" class="loginsign signbutt">Sign Up</button>
             </div>
-
         </div>
     </div>
 
@@ -61,17 +61,18 @@
 
 
 @code {
-    private UserInfo loginInfo = new UserInfo();
-   
+    [Parameter] public Guid TokenId { get; set; }
 
-    private async void Login()
+    private UserInfo loginInfo = new UserInfo();
+
+
+    private async Task Login()
     {
-      
         var userToken = await accountsRepository.Login(loginInfo);
         await loginService.Login(userToken.Token);
         navigationManager.NavigateTo("");
     }
 }
 
-//test@gmail.com
+    //test@gmail.com
     //Aa123456!

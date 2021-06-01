@@ -34,21 +34,25 @@
             <div class="form-group">
                 <div>
                     <InputText id="s-useremail" class="form-control border-secondary" placeholder="UserName" @bind-Value="@userInfo.CustomUserName" />
+                    <ValidationMessage For="@(() => userInfo.CustomUserName)"/>
                 </div>
             </div>
             <div class="form-group">
                 <div>
                     <InputText id="s-useremail" class="form-control border-secondary" placeholder="Email" @bind-Value="@userInfo.Email" />
+                    <ValidationMessage For="@(() => userInfo.Email)" />
                 </div>
             </div>
             <div class="form-group">
                 <div>
                     <InputText id="s-useremail" class="form-control border-secondary" placeholder="Company" @bind-Value="@userInfo.Company" />
+                    <ValidationMessage For="@(() => userInfo.Company)" />
                 </div>
             </div>
             <div class="form-group">
                 <div>
                     <InputPassword @bind-Value="@userInfo.Password" />
+                    <ValidationMessage For="@(() => userInfo.Password)" />
                 </div>
             </div>
 

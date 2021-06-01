@@ -68,32 +68,5 @@ else{
         Polls = CompanyPolls.Where(c => c.QuestionId == 1).ToList();
     }
 
-    class DataItem
-    {
-        public string Quarter { get; set; }
-        public int Revenue { get; set; }
-    }
-
-    DataItem[] revenue = new DataItem[] {
-        new DataItem
-        {
-            Quarter = "A",
-            Revenue = 10000
-        },
-        new DataItem
-        {
-            Quarter = "B",
-            Revenue = 40000
-        },
-        new DataItem
-        {
-            Quarter = "C",
-            Revenue = 50000
-        },
-        new DataItem
-        {
-            Quarter = "D",
-            Revenue = 80000
-        },
-    };
+    
 }

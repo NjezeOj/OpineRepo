@@ -46,6 +46,7 @@ namespace Opine.Client
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<IVotedRepository, VotedRepository>();
             services.AddScoped<IPollRepository, PollRepository>();
+            services.AddScoped<ISendEmailRepository, SendEmailRepository>();
             services.AddSingleton<QuestionService, QuestionService>();
             
             services.AddAuthorizationCore();

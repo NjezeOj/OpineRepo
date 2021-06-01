@@ -1,4 +1,5 @@
 ﻿using Opine.Client.Helpers;
+using Opine.Shared.DTOS;
 using Opine.Shared.Entities;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,20 @@ namespace Opine.Client.Repository
         public async Task CreateToken(Token token)
         {
             var response = await httpService.Post(baseURL, token);
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+        }
+
+        public async Task<PaginatedResponse<List<Token>>> GetTokensyId(PaginationDTO paginationDTO, int id)
+        {
+            return await httpService.GetHelper<List<Token>>(baseURL, paginationDTO, id);
+        }
+
+        public async Task DeleteToken(int Id)
+        {
+            var response = await httpService.Delete($"{baseURL}/{Id}");
             if (!response.Success)
             {
                 throw new ApplicationException(await response.GetBody());

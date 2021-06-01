@@ -160,7 +160,7 @@ else
     }
 
 
-    private async Task ShowNotification() //private async Task
+    private void ShowNotification() //private async Task
     {
         //CREATING POLL
         @*if(Polls.Count == 0)
@@ -307,7 +307,7 @@ else
         voted.QuestionId = QuestionId;
         voted.UserId = UserId;
 
-        await votedRepository.CreateVoted(voted);
+        ///await votedRepository.CreateVoted(voted);
         var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Successful Submission", Detail = "", Duration = 4000 };
         NotificationService.Notify(message);
         NavigationManager.NavigateTo("questions");

@@ -42,6 +42,7 @@ namespace Opine.Client.Helpers
             return new HttpResponseWrapper<object>(null, responseHTTP.IsSuccessStatusCode, responseHTTP);
         }
 
+
         public async Task<HttpResponseWrapper<object>> Put<T>(string url, T data)
         {
             var dataJson = JsonSerializer.Serialize(data);
@@ -64,6 +65,12 @@ namespace Opine.Client.Helpers
             {
                 return new HttpResponseWrapper<TResponse>(default, false, responseHTTP);
             }
+        }
+
+        public async Task<HttpResponseWrapper<object>> Delete(string url)
+        {
+            var responseHTTP = await httpClient.DeleteAsync(url);
+            return new HttpResponseWrapper<object>(null, responseHTTP.IsSuccessStatusCode, responseHTTP);
         }
 
         private async Task<T> Deserialize<T>(HttpResponseMessage httpResponse, JsonSerializerOptions options)

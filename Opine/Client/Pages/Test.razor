@@ -1,38 +1,18 @@
 ﻿@page "/opinionpage"
-@inject NotificationService NotificationService
+@inject ISendEmailRepository sendEmailRepository
+<h3>MailForm</h3>
 
+<button class="btn btn-primary" @onclick="SendMail">Send Mail</button>
+<br />
 
-<div class="row">
-    <div class="col-xl-6">
-        <h3>Error</h3>
-        <RadzenButton Text="Show error notification" Style="margin-bottom: 20px; width: 200px"
-                      ButtonStyle="ButtonStyle.Danger"
-                      Click="ShowNotification" />
-    </div>
-    <div class="col-xl-6">
-        <h3>Success</h3>
-        <RadzenButton Text="Show success notification" Style="margin-bottom: 20px; width: 200px"
-                      ButtonStyle="ButtonStyle.Success"
-                      Click="ShowNotification" />
-    </div>
-</div>
+<span stye="font-weight:bold; font-size:28px; color:#c00;">@message</span>
+
 @code {
-    private int val = 1;
+    private string message { get; set; } = "";
+    private SendEmailDTO sendEmailDTO = new SendEmailDTO();
 
-  
-
-    void ShowNotification()
+    private void SendMail()
     {
-        if(val == 0)
-        {
-            var message =  new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Error Summary", Detail = "Error Detail", Duration = 4000 };
-            NotificationService.Notify(message);
-        }
-
-        else
-        {
-            var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Success Summary", Detail = "Success Detail", Duration = 4000 };
-            NotificationService.Notify(message);
-        }
+       
     }
 }

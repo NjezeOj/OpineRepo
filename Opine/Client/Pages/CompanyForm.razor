@@ -2,19 +2,21 @@
 @inject ICompanyRepository companyRepository
 @inject NavigationManager navigationManager
 
-<EditForm Model="company" OnValidSubmit="CreateCompany">
+<EditForm Model="Company" OnValidSubmit="CreateCompany">
+    <DataAnnotationsValidator/>
     <div class="login div1">
         <div class="logo1div">
             <img class="logo1" src="Images/Group.png" />
         </div>
 
         <div class="login-h2">
-            <h2> Get the answers you need</h2>
+            <h2> For your organisation</h2>
         </div>
         <div class="login-pitch">
             <p>
-                Get the feedback you need using the best result analysis
-                platform.
+                Manage your company's data with advanced security and
+                control, so you can exable your teams to share and
+                collaborate safely.
             </p>
         </div>
     </div>
@@ -27,21 +29,23 @@
 
 
         <div class="sdiv2-child2">
-            <h2>Sign Up</h2>
+            <h2>Register Company</h2>
             <p>Enter company details to create account</p>
             <div class="form-group">
                 <div>
-                    <InputText id="s-username" class="form-control border-secondary" placeholder="Company name" @bind-Value="@company.CompanyName" />
+                    <InputText id="s-username" class="form-control border-secondary" placeholder="Company Name" @bind-Value="@Company.CompanyName" />
+                    <ValidationMessage For="@(() => Company.CompanyName)"/>
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    <InputText id="s-useremail" class="form-control border-secondary" placeholder="Company Email" @bind-Value="@company.Email" />
+                    <InputText id="s-useremail" class="form-control border-secondary" placeholder="Company Email" @bind-Value="@Company.Email" />
+                    <ValidationMessage For="@(() => Company.Email)" />
                 </div>
             </div>
 
             <div class="login-sign">
-                <button type="submit" class="loginsign logbutt">Register Company</button>
+                <button type="submit" class="loginsign logbutt">Register</button>
             </div>
         </div>
 
@@ -52,13 +56,13 @@
 
 
 @code {
-    private Company company = new Company();
+    private Company Company = new Company();
 
-    private async Task CreateCompany()
+    private void CreateCompany()
     {
         try
         {
-            await companyRepository.CreateCompany(company);
+            //await companyRepository.CreateCompany(company);
             navigationManager.NavigateTo("/signup"); 
         }
 

@@ -14,9 +14,9 @@
     <div class="container">
         <h2>Poll Statistics</h2>
         <div class="d-flex justify-content-center">
-            <GenericList List="Questionss">
+            <GenericList List="Questions">
                 <WholeListTemplate>
-                    @foreach (var question in Questionss)
+                    @foreach (var question in Questions)
                     {
                         ts = questionService.TimeCreated(question.UploadTime);
                         <div class="d-flex justify-content-around dashcontcolor questionbg align-items-center w-75 py-3 mt-3">
@@ -35,19 +35,6 @@
                     }
                 </WholeListTemplate>
             </GenericList>
-            
-
-            @*<div class="d-flex justify-content-around dashcontcolor questionbg align-items-center py-3 mt-5">
-                <div>
-                    <h2>Birthday Parties</h2>
-                    <p>by Chrsitopher Morgan</p>
-                </div>
-                <div class="d-flex flex-row">
-                    <p class="oi oi-clock pr-2 restimelogo"></p>
-                    <p>5min</p>
-                </div>
-                <button class="listbutton bg-dark text-white">View responses</button>
-            </div>*@
         </div>
     </div>
 
@@ -59,7 +46,7 @@
 
 
 @code {
-    List<Question> Questionss;
+    List<Question> Questions;
     List<UserDTO> Users;
     PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 2 };
 
@@ -107,8 +94,9 @@
     private async Task LoadQuestions()
     {
         var paginatedResponse = await questionRepository.GetQuestionsyId(paginationDTO, question.CompanyId);
-        Questionss = paginatedResponse.Response;
+        Questions = paginatedResponse.Response;
         totalAmountPages = paginatedResponse.TotalAmountPages;
+       
     }
 
     private async Task SelectedPage(int page)

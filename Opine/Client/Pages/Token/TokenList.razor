@@ -1,0 +1,108 @@
+﻿@page "/tokenlist"
+@inject ITokenRepository tokenRepository
+@inject IUserRepository userRepository
+
+<h3> Token Table</h3>
+<section>
+    
+    <Pagination CurrentPage="@paginationDTO.Page" TotalAmountPages="totalAmountPages"
+                SelectedPage="SelectedPage" />
+
+    <div class="container">
+        <GenericList List="Tokens">
+            <WholeListTemplate>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Token</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var token in Tokens)
+                        {
+                            <tr>
+                                <td>
+                                    <button class="btn btn-danger" @onclick="@(() => DeleteToken(token.Id))">Delete</button>
+                                </td>
+                                <td>
+                                    @token.TokenId
+                                </td>
+                                <td>
+                                    @token.Email
+                                </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </WholeListTemplate>
+        </GenericList>     
+    </div>
+
+    
+
+</section>
+
+@code {
+    List<Token> Tokens;
+    List<UserDTO> Users;
+    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 2 };
+
+    private int totalAmountPages;
+    private Question question = new Question();
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Users = await userRepository.GetUsers();
+            await GetUser();
+            await LoadTokens();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task GetUser()
+    {
+
+        var authState = await AuthenticationState;
+        var user = authState.User;
+        var identityName = user.Identity.Name;
+
+
+        if (user.Identity.IsAuthenticated)
+        {
+
+            question.CompanyId = Users.Where(u => u.Email == identityName).Select(u => u.CompanyId).FirstOrDefault();
+
+        }
+
+    }
+
+
+    private async Task LoadTokens()
+    {
+        var paginatedResponse = await tokenRepository.GetTokensyId(paginationDTO, question.CompanyId);
+        Tokens = paginatedResponse.Response;
+        totalAmountPages = paginatedResponse.TotalAmountPages;
+
+    }
+
+    private async Task SelectedPage(int page)
+    {
+        paginationDTO.Page = page;
+        await LoadTokens();
+
+    }
+
+    private async Task DeleteToken(int id)
+    {
+        await tokenRepository.DeleteToken(id);
+        await LoadTokens();
+    }
+}
