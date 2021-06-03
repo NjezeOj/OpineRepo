@@ -3,11 +3,8 @@
 @inject NavigationManager navigationManager
 @inject IQuestionRepository questionRepository
 @inject QuestionService questionService
+@attribute [Authorize]
 <section>
-    <div id="flex-container" class="create-survey">
-        <button>Polls</button>
-    </div>
-
     <Pagination CurrentPage="@paginationDTO.Page" TotalAmountPages="totalAmountPages"
                 SelectedPage="SelectedPage" />
 

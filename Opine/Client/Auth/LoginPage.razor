@@ -4,8 +4,7 @@
 @inject ILoginService loginService
 @inject NavigationManager navigationManager
 
-<EditForm Model="loginInfo" OnValidSubmit="Login">
-    <DataAnnotationsValidator/>
+<EditForm Model="loginInfo" OnSubmit="Login">
     <div class="login div1">
         <div class="logo1div">
             <img class="logo1" src="Images/loginwork.svg" />
@@ -34,41 +33,38 @@
 
             <div class="form-group">
                 <div>
-                    <InputText id="s-useremail" class="form-control border-secondary" placeholder="Email" @bind-Value="@loginInfo.Email" />
-                    <ValidationMessage For="@(() => loginInfo.Email)"/>
+                    <InputText class="form-control border-secondary w-75" placeholder="Email" @bind-Value="@loginInfo.Email" />
+                    
                 </div>
             </div>
         
             <div class="form-group">
                 <div>
                     <InputPassword @bind-Value="@loginInfo.Password" />
-                    <ValidationMessage For="@(() => loginInfo.Password)" />
                 </div>
             </div>
 
             <div class="login-sign">
-                <button type="submit" class="loginsign logbutt">Login</button>
-                <button href="/company/create" class="loginsign signbutt">Sign Up</button>
+                <button class="btn btn-primary" type="submit">Login</button>                
+                <a href="/company/create" class="btn btn-outline-primary">Sign Up</a>
             </div>
 
         </div>
     </div>
-
-
-
 </EditForm>
 
 
 
 @code {
     private UserInfo loginInfo = new UserInfo();
-   
 
-    private async void Login()
+
+    private async Task Login()
     {
-      
         var userToken = await accountsRepository.Login(loginInfo);
         await loginService.Login(userToken.Token);
+        
+        @*Console.WriteLine(loginInfo.Email);*@
         navigationManager.NavigateTo("");
     }
 }

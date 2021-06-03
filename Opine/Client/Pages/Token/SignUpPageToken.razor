@@ -1,15 +1,18 @@
-﻿@page "/loginpage/{TokenId:Guid}"
+﻿@page "/signup/{TokenId:guid}"
 @inject IAccountsRepository accountsRepository
 @inject ICompanyRepository companyRepository
 @inject ITokenRepository tokenRepository
 @inject ILoginService loginService
+@inject IUserRepository userRepository
 @inject NavigationManager navigationManager
+@inject NotificationService NotificationService
 
-<EditForm Model="loginInfo" OnValidSubmit="Login">
-    <DataAnnotationsValidator />
+
+<EditForm Model="userInfo" OnSubmit="SignUp">
+
     <div class="login div1">
         <div class="logo1div">
-            <img class="logo1" src="Images/loginwork.svg" />
+            <img class="logo1" src="Images/signupwork.svg" />
         </div>
 
         <div class="login-h2">
@@ -23,56 +26,139 @@
         </div>
     </div>
 
-    <div class="login div2">
+
+    <div class="login ssdiv2">
         <div class="login-logo">
             <img src="Images/logo.svg" />
         </div>
 
 
-        <div class="div2-child2">
-            <h2>Welcome back</h2>
-            <p>Login to manage your account</p>
-
+        <div class="sdiv2-child2">
+            <h2>Sign Up</h2>
+            <p>Enter your details to create your account</p>
             <div class="form-group">
                 <div>
-                    <InputText id="s-useremail" class="form-control border-secondary" placeholder="Email" @bind-Value="@loginInfo.Email" />
-                    <ValidationMessage For="@(() => loginInfo.Email)" />
+                    <InputText class="form-control border-secondary w-75" placeholder="UserName" @bind-Value="@userInfo.CustomUserName" />
+
                 </div>
             </div>
-
             <div class="form-group">
                 <div>
-                    <InputPassword @bind-Value="@loginInfo.Password" />
-                    <ValidationMessage For="@(() => loginInfo.Password)" />
+                    <InputText class="form-control border-secondary w-75" placeholder="Email" @bind-Value="@userInfo.Email" />
+
+                </div>
+            </div>
+            <div class="form-group">
+                <div>
+                    <InputPassword @bind-Value="@userInfo.Password" />
+
                 </div>
             </div>
 
             <div class="login-sign">
-                <button type="submit" class="loginsign logbutt">Login</button>
-                <button href="/company/create" class="loginsign signbutt">Sign Up</button>
+                <button class="btn btn-primary" type="submit">Sign Up</button>
             </div>
+
         </div>
+
     </div>
-
-
-
 </EditForm>
 
 
-
 @code {
+
+    List<Token> Tokens;
+    private Token token = new Token();
+    private UserInfo userInfo = new UserInfo();
+    List<Company> Companies;
+
+    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 100 };
+
     [Parameter] public Guid TokenId { get; set; }
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
-    private UserInfo loginInfo = new UserInfo();
+    //GEt company Id by user
+    //Get token by ID
 
-
-    private async Task Login()
+    protected override async Task OnInitializedAsync()
     {
-        var userToken = await accountsRepository.Login(loginInfo);
-        await loginService.Login(userToken.Token);
-        navigationManager.NavigateTo("");
+        try
+        {
+            var paginatedResponses = await companyRepository.GetCompanies(paginationDTO);
+            Companies = paginatedResponses.Response;
+            await LoadTokens();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
+
+    private async Task SignUp()
+    {
+
+        //Console.WriteLine(TokenId.ToString());
+        var tokenObj = Tokens.Where(t => t.TokenId.ToString() == TokenId.ToString()).FirstOrDefault();
+        //var tokenObj = Tokens.Where(t => t.TokenId.Equals(TokenId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+
+        userInfo.CompanyId = tokenObj.CompanyId;
+        userInfo.Company = Companies.Where(c => c.Id == userInfo.CompanyId).Select(c => c.CompanyName).FirstOrDefault();
+
+        if (userInfo.Email == tokenObj.Email)
+        {
+            try
+            {
+
+                Console.WriteLine(userInfo.Company);
+                Console.WriteLine(userInfo.CompanyId);
+                Console.WriteLine(userInfo.CustomUserName);
+                Console.WriteLine(userInfo.Email);
+                var userToken = await accountsRepository.Register(userInfo);
+                await loginService.Login(userToken.Token);
+                var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "SignUp Successful", Detail = "", Duration = 4000 };
+                NotificationService.Notify(message);
+                navigationManager.NavigateTo("dashboard");
+
+            }
+            catch (Exception ex)
+            {
+                var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registeration Failed", Detail = ex.Message, Duration = 4000 };
+                NotificationService.Notify(message);
+            }
+        }
+        else
+        {
+            var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registeration Failed", Detail = "Invalid Token Or Email", Duration = 4000 };
+            NotificationService.Notify(message);
+        }
+
+
+
+
+
+
+
+
+        @*var userToken = await accountsRepository.Register(userInfo);
+            await loginService.Login(userToken.Token);*@
+        
+
+
+
+    }
+
+
+
+
+
+    private async Task LoadTokens()
+    {
+        Tokens = await tokenRepository.Get();
+
+    }
+
+
 }
 
-    //test@gmail.com
-    //Aa123456!
+        //test@gmail.com
+        //Aa123456!

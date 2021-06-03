@@ -21,7 +21,7 @@ namespace Opine.Server.Controllers
             this.context = context;
         }
 
-        /*[HttpGet]
+       /* [HttpGet]
         public async Task<ActionResult<List<Company>>> Get()
         {
             return await context.Companies.ToListAsync();

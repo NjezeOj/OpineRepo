@@ -1,10 +1,11 @@
 ﻿@page "/tokenlist"
 @inject ITokenRepository tokenRepository
 @inject IUserRepository userRepository
+@attribute [Authorize]
 
 <h3> Token Table</h3>
 <section>
-    
+
     <Pagination CurrentPage="@paginationDTO.Page" TotalAmountPages="totalAmountPages"
                 SelectedPage="SelectedPage" />
 
@@ -32,15 +33,15 @@
                                 <td>
                                     @token.Email
                                 </td>
-                        </tr>
+                            </tr>
                         }
                     </tbody>
                 </table>
             </WholeListTemplate>
-        </GenericList>     
+        </GenericList>
     </div>
 
-    
+
 
 </section>
 

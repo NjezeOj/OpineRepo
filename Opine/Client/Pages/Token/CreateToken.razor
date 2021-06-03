@@ -1,9 +1,10 @@
 ﻿@page "/token/create"
 @inject ITokenRepository tokenRepository
-
+@inject NavigationManager navigationManager
+@attribute [Authorize]
 <h3>CreateToken</h3>
 
-<TokenForm Token="token" OnValidSubmit="Create"/>
+<TokenForm Token="token" OnValidSubmit="Create" />
 
 
 @code {
@@ -22,10 +23,10 @@
         try
         {
             await tokenRepository.CreateToken(token);
-
+            navigationManager.NavigateTo("tokenlist");
         }
 
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }

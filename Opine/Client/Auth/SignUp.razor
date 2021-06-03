@@ -4,7 +4,7 @@
 @inject ILoginService loginService
 @inject NavigationManager navigationManager
 
-<EditForm Model="userInfo" OnValidSubmit="CreateUser">
+<EditForm Model="userInfo" OnSubmit="CreateUser">
     <div class="login div1">
         <div class="logo1div">
             <img class="logo1" src="Images/signupwork.svg" />
@@ -33,31 +33,28 @@
             <p>Enter your details to create your account</p>
             <div class="form-group">
                 <div>
-                    <InputText id="s-useremail" class="form-control border-secondary" placeholder="UserName" @bind-Value="@userInfo.CustomUserName" />
-                    <ValidationMessage For="@(() => userInfo.CustomUserName)"/>
+                    <InputText class="form-control border-secondary w-75" placeholder="UserName" @bind-Value="@userInfo.CustomUserName" />
+                    
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    <InputText id="s-useremail" class="form-control border-secondary" placeholder="Email" @bind-Value="@userInfo.Email" />
-                    <ValidationMessage For="@(() => userInfo.Email)" />
+                    <InputText class="form-control border-secondary w-75" placeholder="Email" @bind-Value="@userInfo.Email" />              
                 </div>
             </div>
             <div class="form-group">
                 <div>
-                    <InputText id="s-useremail" class="form-control border-secondary" placeholder="Company" @bind-Value="@userInfo.Company" />
-                    <ValidationMessage For="@(() => userInfo.Company)" />
+                    <InputText class="form-control border-secondary w-75" placeholder="Company" @bind-Value="@userInfo.Company" />                 
                 </div>
             </div>
             <div class="form-group">
                 <div>
                     <InputPassword @bind-Value="@userInfo.Password" />
-                    <ValidationMessage For="@(() => userInfo.Password)" />
                 </div>
             </div>
 
             <div class="login-sign">
-                <button type="submit" class="loginsign logbutt">Sign Up</button>
+                <button class="btn btn-primary" type="submit">Sign Up</button>
             </div>
 
         </div>
@@ -67,26 +64,30 @@
 
 
 @code {
-        private UserInfo userInfo = new UserInfo();
-        private PaginationDTO paginationDTO = new PaginationDTO() {Page = 1, RecordsPerPage=100 };
-        List<Company> Companies;
+    private UserInfo userInfo = new UserInfo();
+    private PaginationDTO paginationDTO = new PaginationDTO() {Page = 1, RecordsPerPage=100 };
+    List<Company> Companies;
 
-        protected override async Task OnInitializedAsync()
-        {
-            var paginatedResponses = await companyRepository.GetCompanies(paginationDTO);
-            Companies = paginatedResponses.Response;
-        }
-
-        private async void CreateUser()
-        {
-            userInfo.CompanyId = Companies.Where(c => c.CompanyName == userInfo.Company).Select(c => c.Id).FirstOrDefault();
-
-            var userToken = await accountsRepository.Register(userInfo);
-            await loginService.Login(userToken.Token);
-            navigationManager.NavigateTo("");
-
-        }
+    protected override async Task OnInitializedAsync()
+    {
+        var paginatedResponses = await companyRepository.GetCompanies(paginationDTO);
+        Companies = paginatedResponses.Response;
     }
+
+    private async Task CreateUser()
+    {
+        userInfo.CompanyId = Companies.Where(c => c.CompanyName == userInfo.Company).Select(c => c.Id).FirstOrDefault();
+
+        Console.WriteLine(userInfo.Company);
+        Console.WriteLine(userInfo.CompanyId);
+        Console.WriteLine(userInfo.CustomUserName);
+        Console.WriteLine(userInfo.Email);
+            @*var userToken = await accountsRepository.Register(userInfo);
+            await loginService.Login(userToken.Token);
+            navigationManager.NavigateTo("");*@
+
+    }
+}
 
 
     //test@gmail.com

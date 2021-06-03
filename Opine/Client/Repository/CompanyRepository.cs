@@ -22,7 +22,7 @@ namespace Opine.Client.Repository
         {
             var response = await httpService.Get<List<Company>>(baseURL);
 
-             
+
             if (!response.Success)
             {
                 throw new ApplicationException(await response.GetBody());
