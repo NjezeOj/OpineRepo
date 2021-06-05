@@ -10,7 +10,7 @@ namespace Opine.Client.Repository
     {
         Task AssignRole(EditRoleDTO editRoleDTO);
         Task<List<RoleDTO>> GetRoles();
-        Task<PaginatedResponse<List<UserDTO>>> GetUsers(PaginationDTO paginationDTO);
+        Task<PaginatedResponse<List<UserDTO>>> GetUsersById(PaginationDTO paginationDTO, int id);
         Task<List<UserDTO>> GetUsers();
         Task RemoveRole(EditRoleDTO editRoleDTO);
     }

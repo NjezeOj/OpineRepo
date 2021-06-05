@@ -1,11 +1,12 @@
 ﻿@page "/users"
 @inject IUserRepository userRepository
+@inject IUserService userService
 
 <Pagination CurrentPage="@paginationDTO.Page" SelectedPage="SelectedPage"
-            TotalAmountPages="totalAmountOfPages"/>
+            TotalAmountPages="totalAmountOfPages" />
 <h3>IndexUsers</h3>
 
-<GenericList List="Users">
+<GenericList List="CompanyUsers">
     <WholeListTemplate>
         <table class="table table-striped">
             <thead>
@@ -15,7 +16,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var user in Users)
+                @foreach (var user in CompanyUsers)
                 {
                     <tr>
                         <td>
@@ -35,11 +36,18 @@
 
 @code {
     List<UserDTO> Users;
+    List<UserDTO> CompanyUsers;
+    private int CompanyId;
     PaginationDTO paginationDTO = new PaginationDTO();
     int totalAmountOfPages;
 
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
+
     protected override async Task OnInitializedAsync()
     {
+        Users = await userRepository.GetUsers();
+        await GetCompanyId();
         await LoadUsers();
     }
 
@@ -49,10 +57,30 @@
         await LoadUsers();
     }
 
+    private async Task GetCompanyId()
+    {
+
+        var authState = await AuthenticationState;
+        var user = authState.User;
+        var identityName = user.Identity.Name;
+
+
+        if (user.Identity.IsAuthenticated)
+        {
+
+            CompanyId = Users.Where(u => u.Email == identityName).Select(u => u.CompanyId).FirstOrDefault();
+            Console.WriteLine(CompanyId);
+        }
+        @*CompanyId = await userService.GetCompanyId();*@
+        
+
+    }
+
     private async Task LoadUsers()
     {
-        var paginatedResponse = await userRepository.GetUsers(paginationDTO);
-        Users = paginatedResponse.Response;
+
+        var paginatedResponse = await userRepository.GetUsersById(paginationDTO, CompanyId);
+        CompanyUsers = paginatedResponse.Response;
         totalAmountOfPages = paginatedResponse.TotalAmountPages;
     }
 }

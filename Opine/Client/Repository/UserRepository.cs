@@ -16,9 +16,9 @@ namespace Opine.Client.Repository
             this.httpService = httpService;
         }
 
-        public async Task<PaginatedResponse<List<UserDTO>>> GetUsers(PaginationDTO paginationDTO)
+        public async Task<PaginatedResponse<List<UserDTO>>> GetUsersById(PaginationDTO paginationDTO, int id)
         {
-            return await httpService.GetHelper<List<UserDTO>>(baseURL, paginationDTO);
+            return await httpService.GetHelper<List<UserDTO>>(baseURL, paginationDTO, id);
         }
 
         public async Task<List<UserDTO>> GetUsers()

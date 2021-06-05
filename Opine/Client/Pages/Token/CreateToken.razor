@@ -1,6 +1,8 @@
 ﻿@page "/token/create"
 @inject ITokenRepository tokenRepository
 @inject NavigationManager navigationManager
+@inject IUserRepository userRepository
+@inject NotificationService NotificationService
 @attribute [Authorize]
 <h3>CreateToken</h3>
 
@@ -8,31 +10,111 @@
 
 
 @code {
+    List<UserDTO> Users;
+    List<UserDTO> CompanyUsers;
+    private int CompanyId;
     private Token token = new Token();
     private Guid obj = Guid.NewGuid();
 
+    private PaginationDTO paginationDTO = new PaginationDTO() { Page = 1, RecordsPerPage = 1000000000 };
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Users = await userRepository.GetUsers();
+        await GetUser();
+        await LoadUsers();
+    }
+
     private async Task Create()
     {
-        Console.WriteLine("create method");
 
-        token.TokenId = obj;
-        Console.WriteLine(token.TokenId.ToString());
-        Console.WriteLine(token.Email);
-        Console.WriteLine(token.CompanyId);
-
-        try
+        if (Check())
         {
-            await tokenRepository.CreateToken(token);
-            navigationManager.NavigateTo("tokenlist");
+            try
+            {
+                Console.WriteLine("create method");
+                Console.WriteLine(token.TokenId.ToString());
+                Console.WriteLine(token.Email);
+                Console.WriteLine(token.CompanyId);
+
+                token.TokenId = obj;
+                token.CompanyId = CompanyId;
+                token.Email = token.Email.ToLower();
+                await tokenRepository.CreateToken(token);
+                var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Token Created", Detail = "", Duration = 4000 };
+                NotificationService.Notify(message);
+                navigationManager.NavigateTo("tokenlist");
+            }
+
+            catch (Exception ex)
+            {
+                var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Token Not Created", Detail = ex.Message, Duration = 4000 };
+                NotificationService.Notify(message);
+            }
+
+
+        }
+        else
+        {
+            var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registeration Failed", Detail = "Email Or Company Name exists", Duration = 4000 };
+            NotificationService.Notify(message);
         }
 
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+
+
+
+
+
+
+
         //TokenId
         //Email
         //CompanyId
     }
+
+    private async Task GetUser()
+    {
+
+        var authState = await AuthenticationState;
+        var user = authState.User;
+        var identityName = user.Identity.Name;
+
+
+        if (user.Identity.IsAuthenticated)
+        {
+
+            CompanyId = Users.Where(u => u.Email == identityName).Select(u => u.CompanyId).FirstOrDefault();
+            Console.WriteLine(CompanyId);
+        }
+
+    }
+
+    private async Task LoadUsers()
+    {
+        var paginatedResponse = await userRepository.GetUsersById(paginationDTO, CompanyId );
+        CompanyUsers = paginatedResponse.Response;
+
+    }
+
+    private bool Check()
+    {
+        var userEmailObj = CompanyUsers.Where(u => u.Email == token.Email).FirstOrDefault();
+        if (userEmailObj != null)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 }
+
+@*
+        can't have two users with the same email in the same company
+    -Get companyID
+    -list users with respect to users
+    -check if email is already in company
+*@
 

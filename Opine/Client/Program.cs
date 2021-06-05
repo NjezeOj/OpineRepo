@@ -48,7 +48,8 @@ namespace Opine.Client
             services.AddScoped<IPollRepository, PollRepository>();
             services.AddScoped<ISendEmailRepository, SendEmailRepository>();
             services.AddSingleton<QuestionService, QuestionService>();
-            
+            services.AddScoped<IUserService, UserService>();
+
             services.AddAuthorizationCore();
 
             services.AddScoped<JWTAuthenticationStateProvider>();

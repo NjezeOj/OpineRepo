@@ -25,14 +25,14 @@ namespace Opine.Server.Controllers
             this.userManager = userManager;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<UserDTO>>> Get([FromQuery] PaginationDTO paginationDTO)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<List<UserDTO>>> Get([FromQuery] PaginationDTO paginationDTO, int id)
         {
-            var queryable = context.Users.AsQueryable();
+            var queryable = context.Users.Where(u => u.CompanyId == id).AsQueryable();
             await HttpContext.InsertPaginationParametersInResponse(queryable, paginationDTO.RecordsPerPage);
 
             return await queryable.Paginate(paginationDTO)
-                .Select(x => new UserDTO { Email = x.Email, UserId = x.Id, CustomUserName = x.CustomUserName }).ToListAsync();
+                .Select(x => new UserDTO { Email = x.Email, UserId = x.Id, CustomUserName = x.CustomUserName, CompanyId = x.CompanyId }).ToListAsync();
         }
 
         [HttpGet("users")]

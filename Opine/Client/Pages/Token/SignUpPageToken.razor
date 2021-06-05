@@ -38,7 +38,7 @@
             <p>Enter your details to create your account</p>
             <div class="form-group">
                 <div>
-                    <InputText class="form-control border-secondary w-75" placeholder="UserName" @bind-Value="@userInfo.CustomUserName" />
+                    <InputText class="form-control border-secondary w-75" placeholder="UserName (Case-sensitive)" @bind-Value="@userInfo.CustomUserName" />
 
                 </div>
             </div>
@@ -51,7 +51,6 @@
             <div class="form-group">
                 <div>
                     <InputPassword @bind-Value="@userInfo.Password" />
-
                 </div>
             </div>
 
@@ -113,6 +112,8 @@
                 Console.WriteLine(userInfo.CompanyId);
                 Console.WriteLine(userInfo.CustomUserName);
                 Console.WriteLine(userInfo.Email);
+
+                userInfo.Email = userInfo.Email.ToLower();
                 var userToken = await accountsRepository.Register(userInfo);
                 await loginService.Login(userToken.Token);
                 var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "SignUp Successful", Detail = "", Duration = 4000 };
@@ -146,9 +147,6 @@
 
 
     }
-
-
-
 
 
     private async Task LoadTokens()

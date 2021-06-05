@@ -8,14 +8,6 @@
         </div>
     </div>
 
-    <div class="form-group">
-        <label>CompanyId:</label>
-        <div>
-            <InputNumber class="form-control" @bind-Value="@Token.CompanyId" />
-            <ValidationMessage For="@(() => Token.CompanyId)" />
-        </div>
-    </div>
-
     <button class="btn btn-success" type="submit">Save Changes</button>
 </EditForm>
 

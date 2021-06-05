@@ -1,10 +1,11 @@
 ﻿@page "/dashboard"
+@inject IUserRepository userRepository
 
 <div class="container">
     <div class="d-flex justify-content-center mb-4">
         <div class="dashcontcolor w-50 rounded-lg ">
             <div class="ml-4 pt-4 pb-1">
-                <h2>Hello Oj!</h2>
+                <h2>Hello @UserName</h2>
                 <p class="mt-n2">It's good to see you</p>
             </div>
         </div>
@@ -19,5 +20,35 @@
 </div>
 
 @code {
+    List<UserDTO> Users;
+    private string IdentityName;
+    private string UserName;
 
+
+
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Users = await userRepository.GetUsers();
+        await GetUser();
+    }
+
+
+    private async Task GetUser()
+    {
+
+        var authState = await AuthenticationState;
+        var user = authState.User;
+        IdentityName = user.Identity.Name;
+
+
+        if (user.Identity.IsAuthenticated)
+        {
+            UserName = Users.Where(u => u.Email == IdentityName).Select(u => u.CustomUserName).FirstOrDefault();
+
+
+        }
+
+    }
 }

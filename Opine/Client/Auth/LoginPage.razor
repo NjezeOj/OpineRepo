@@ -3,6 +3,7 @@
 @inject ICompanyRepository companyRepository
 @inject ILoginService loginService
 @inject NavigationManager navigationManager
+@inject NotificationService NotificationService
 
 <EditForm Model="loginInfo" OnSubmit="Login">
     <div class="login div1">
@@ -34,10 +35,10 @@
             <div class="form-group">
                 <div>
                     <InputText class="form-control border-secondary w-75" placeholder="Email" @bind-Value="@loginInfo.Email" />
-                    
+
                 </div>
             </div>
-        
+
             <div class="form-group">
                 <div>
                     <InputPassword @bind-Value="@loginInfo.Password" />
@@ -45,7 +46,7 @@
             </div>
 
             <div class="login-sign">
-                <button class="btn btn-primary" type="submit">Login</button>                
+                <button class="btn btn-primary" type="submit">Login</button>
                 <a href="/company/create" class="btn btn-outline-primary">Sign Up</a>
             </div>
 
@@ -61,13 +62,25 @@
 
     private async Task Login()
     {
-        var userToken = await accountsRepository.Login(loginInfo);
-        await loginService.Login(userToken.Token);
-        
-        @*Console.WriteLine(loginInfo.Email);*@
-        navigationManager.NavigateTo("");
+        try
+        {
+            loginInfo.Email = loginInfo.Email.ToLower();
+            var userToken = await accountsRepository.Login(loginInfo);
+            await loginService.Login(userToken.Token);
+
+
+            navigationManager.NavigateTo("");
+        }
+        catch (Exception ex)
+        {
+            var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Login Failed", Detail = ex.Message, Duration = 4000 };
+            NotificationService.Notify(message);
+        }
+
+
+
     }
 }
 
 //test@gmail.com
-    //Aa123456!
+    //Aa123456!   @*Console.WriteLine(loginInfo.Email);*@

@@ -1,6 +1,7 @@
 ﻿@page "/company/create"
 @inject ICompanyRepository companyRepository
 @inject NavigationManager navigationManager
+@inject NotificationService NotificationService
 
 <EditForm Model="Company" OnValidSubmit="CreateCompany">
     <DataAnnotationsValidator/>
@@ -33,7 +34,7 @@
             <p>Enter company details to create account</p>
             <div class="form-group">
                 <div>
-                    <InputText class="form-control border-secondary w-75" placeholder="Company Name" @bind-Value="@Company.CompanyName" />
+                    <InputText class="form-control border-secondary w-75" placeholder="Company Name (case-sensitive)" @bind-Value="@Company.CompanyName" />
                     <ValidationMessage For="@(() => Company.CompanyName)"/>
                 </div>
             </div>
@@ -57,19 +58,69 @@
 
 @code {
     private Company Company = new Company();
+    List<Company> Companies;
+    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 1000000000 };
 
-    private void CreateCompany()
+    protected override async Task OnInitializedAsync()
     {
         try
         {
-            //await companyRepository.CreateCompany(company);
-            navigationManager.NavigateTo("/signup"); 
+            await LoadCompanies();
         }
-
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
     }
+
+    private bool Check()
+    {
+        var companynameObj = Companies.Where(c => c.CompanyName == Company.CompanyName).FirstOrDefault();
+        var companyemailObj = Companies.Where(c => c.Email == Company.Email).FirstOrDefault();
+
+        if (companynameObj != null && companyemailObj != null)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    private void CreateCompany()
+    {
+        if (Check())
+        {
+            try
+            {
+                //Company.Email = Company.Email.ToLower();
+                //await companyRepository.CreateCompany(company);
+                //navigationManager.NavigateTo("/signup");
+            }
+
+            catch (Exception ex)
+            {
+                var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registeration Failed", Detail = ex.Message, Duration = 4000 };
+                NotificationService.Notify(message);
+            }
+        }
+        else
+        {
+            var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registeration Failed", Detail = "Email Or Company Name exists", Duration = 4000 };
+            NotificationService.Notify(message);
+        }
+
+    }
+
+    private async Task LoadCompanies()
+    {
+        var paginatedResponse = await companyRepository.GetCompanies(paginationDTO);
+        Companies = paginatedResponse.Response;
+
+    }
+
+
+
 }
 
