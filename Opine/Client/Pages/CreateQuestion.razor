@@ -1,7 +1,7 @@
 ﻿@page "/question/create"
 @inject IUserRepository userRepository
-@inject QuestionService testService
 @inject IQuestionRepository questionRepository
+@inject NavigationManager navigationManager
 @attribute [Authorize]
 
 <QuestionForm Question="question" OnValidSubmit="Create" />
@@ -11,7 +11,6 @@
     List<UserDTO> Users;
     private string identityName;
     private Question question = new Question();
-    DateTime launchDate = new DateTime(2021, 5, 20, 3, 0, 0);
     DateTime now = DateTime.Now;
 
 
@@ -28,6 +27,7 @@
         try
         {
             await questionRepository.CreateQuestion(question);
+            navigationManager.NavigateTo("/questions");
         }
         catch (Exception ex)
         {

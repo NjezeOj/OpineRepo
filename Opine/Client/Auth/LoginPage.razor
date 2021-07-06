@@ -73,7 +73,7 @@
         }
         catch (Exception ex)
         {
-            var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Login Failed", Detail = ex.Message, Duration = 4000 };
+            var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Login Failed", Detail = "Re-enter user credentials", Duration = 4000 };
             NotificationService.Notify(message);
         }
 

@@ -39,7 +39,7 @@ namespace Opine.Client
         {
             services.AddScoped<IHttpService, HttpService>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
-            services.AddScoped<IQuestionRepository, QuestionRespository>();
+            services.AddScoped<IQuestionRepository, QuestionRepository>();
             services.AddScoped<IAccountsRepository, AccountsRepository>();
             services.AddScoped<IDisplayMessage, DisplayMessage>();
             services.AddScoped<IUserRepository, UserRepository>();

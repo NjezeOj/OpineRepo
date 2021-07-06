@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Opine.Client.Repository
 {
-    public class QuestionRespository: IQuestionRepository
+    public class QuestionRepository: IQuestionRepository
     {
         private readonly IHttpService httpService;
         private readonly string baseURL = "api/questions";
-        public QuestionRespository(IHttpService httpService)
+        public QuestionRepository(IHttpService httpService)
         {
             this.httpService = httpService;
         }

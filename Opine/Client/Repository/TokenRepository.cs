@@ -45,9 +45,9 @@ namespace Opine.Client.Repository
             return await httpService.GetHelper<List<Token>>(baseURL, paginationDTO, id);
         }
 
-        public async Task DeleteToken(int Id)
+        public async Task DeleteToken(int id)
         {
-            var response = await httpService.Delete($"{baseURL}/{Id}");
+            var response = await httpService.Delete($"{baseURL}/{id}");
             if (!response.Success)
             {
                 throw new ApplicationException(await response.GetBody());

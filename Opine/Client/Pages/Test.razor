@@ -1,18 +1,52 @@
-﻿@page "/opinionpage"
-@inject ISendEmailRepository sendEmailRepository
-<h3>MailForm</h3>
+﻿@page "/encryptpage"
+@using System.Security.Cryptography
+@using System.Text 
 
-<button class="btn btn-primary" @onclick="SendMail">Send Mail</button>
-<br />
 
-<span stye="font-weight:bold; font-size:28px; color:#c00;">@message</span>
+<EditForm Model="EncryptedPoll" OnSubmit="Encrypt">
+    <div class="form-group">
+        <div>
+            <InputText class="form-control border-secondary w-75" placeholder="Company Name (case-sensitive)" @bind-Value="EncryptedPoll.Option" />
 
-@code {
-    private string message { get; set; } = "";
-    private SendEmailDTO sendEmailDTO = new SendEmailDTO();
+        </div>
+    </div>
 
-    private void SendMail()
+    <button class="btn btn-primary" type="submit">Encrypt</button>
+</EditForm>
+
+@code{
+    private EncryptedPoll EncryptedPoll = new EncryptedPoll();
+
+    UnicodeEncoding ByteConverter = new UnicodeEncoding();
+    RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
+    byte[] plaintext;
+    byte[] encryptedtext;
+    string encyptedValue;
+
+    static public byte[] Encryption(byte[] Data, RSAParameters RSAKey, bool DoOAEPPadding)
     {
-       
+        try
+        {
+            byte[] encryptedData;
+            using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+            {
+                RSA.ImportParameters(RSAKey);
+                encryptedData = RSA.Encrypt(Data, DoOAEPPadding);
+            }
+            return encryptedData;
+        }
+        catch (CryptographicException e)
+        {
+            Console.WriteLine(e.Message);
+            return null;
+        }
+    }
+
+    private void Encrypt()
+    {
+        plaintext = ByteConverter.GetBytes(EncryptedPoll.Option);
+        encryptedtext = Encryption(plaintext, RSA.ExportParameters(false), false);
+        encyptedValue = ByteConverter.GetString(encryptedtext);
+        Console.WriteLine(encyptedValue);
     }
 }
