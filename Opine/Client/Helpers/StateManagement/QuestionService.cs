@@ -9,12 +9,24 @@ namespace Opine.Client.Helpers.StateManagement
 {
     public class QuestionService
     {
+        private Company Comp;
        
         public TimeSpan TimeCreated(DateTime uploadTime)
         {
             TimeSpan diff = DateTime.Now - uploadTime;
             return diff;
         }
+
+        public void SetCompObj(Company comp)
+        {
+            Comp = comp;
+        }
+
+        public Company GetCompObj()
+        {
+            return Comp;
+        }
+
 
    
     }

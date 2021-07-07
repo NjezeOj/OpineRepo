@@ -2,6 +2,7 @@
 @inject IAccountsRepository accountsRepository
 @inject ICompanyRepository companyRepository
 @inject ILoginService loginService
+@inject QuestionService questionService
 @inject NavigationManager navigationManager
 @inject NotificationService NotificationService
 
@@ -85,7 +86,11 @@
             userInfo.CompanyId = Companies.Where(c => c.CompanyName == userInfo.Company).Select(c => c.Id).FirstOrDefault();
             userInfo.Email = userInfo.Email.ToLower();
 
+            var comp = questionService.GetCompObj();
+            Console.WriteLine(comp.Email);
+            Console.WriteLine(comp.CompanyName);
 
+            //await companyRepository.CreateCompany(comp);
             @*var userToken = await accountsRepository.Register(userInfo);
                 await loginService.Login(userToken.Token);
                 navigationManager.NavigateTo("");*@
