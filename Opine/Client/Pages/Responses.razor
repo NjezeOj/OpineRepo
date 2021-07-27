@@ -1,5 +1,4 @@
 ﻿@page "/responses"
-
 @inject IUserRepository userRepository
 @inject NavigationManager navigationManager
 @inject IQuestionRepository questionRepository
@@ -31,7 +30,7 @@
                                 <p> @ts.Days:@ts.Hours:@ts.Minutes:@ts.Seconds</p>
                             </div>
                             <div id="flex-container" class="create-survey">
-                                <a class="btn btn-primary" href="responsepage">View Response</a>
+                                <a class="btn btn-primary" href="/responsepage/@question.Id">View Response</a>
                             </div>
                         </div>
                     }

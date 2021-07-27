@@ -48,5 +48,21 @@ namespace Opine.Server.Controllers
             await context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var polls = await context.Polls.Where(p => p.QuestionId == id).ToListAsync();
+
+            if(polls == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var poll in polls)
+                context.Remove(poll);
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }

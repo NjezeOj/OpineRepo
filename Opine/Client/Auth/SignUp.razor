@@ -1,4 +1,5 @@
 ﻿@page "/signup"
+@using System.Net.Mail
 @inject IAccountsRepository accountsRepository
 @inject ICompanyRepository companyRepository
 @inject ILoginService loginService
@@ -90,10 +91,11 @@
             Console.WriteLine(comp.Email);
             Console.WriteLine(comp.CompanyName);
 
+            IsValidEmail(userInfo.Email);
             //await companyRepository.CreateCompany(comp);
             @*var userToken = await accountsRepository.Register(userInfo);
                 await loginService.Login(userToken.Token);
-                navigationManager.NavigateTo("");*@
+                navigationManager.NavigateTo("/adminrole");*@
         }
 
         catch (Exception ex)
@@ -112,6 +114,20 @@
 
     }
 
+    bool IsValidEmail(string email)
+    {
+        try
+        {
+            var addr = new MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Login Failed", Detail = "Re-enter valid Email", Duration = 4000 };
+            NotificationService.Notify(message);
+            return false;
+        }
+    }
 
 
 }

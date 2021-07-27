@@ -1,5 +1,6 @@
 ﻿@page "/questions"
 @inject IUserRepository userRepository
+@inject IPollRepository pollRepository
 @inject NavigationManager navigationManager
 @inject IQuestionRepository questionRepository
 @inject QuestionService questionService
@@ -25,9 +26,15 @@
                                 <p class="oi oi-clock pr-2 restimelogo"></p>
                                 <p> @ts.Days:@ts.Hours:@ts.Minutes:@ts.Seconds</p>
                             </div>
-                            <div id="flex-container" class="create-survey">
-                                <a class="btn btn-primary" href="/question/opinionpage/@question.Id">Select Opinion</a>
-                            </div>
+                            
+                                    <div id="flex-container" class="create-survey">
+                                        <a class="btn btn-primary" href="/question/@question.Id">Select Opinion</a>
+                                    </div>
+                                    <div id="flex-container">
+                                        <button type="button" class="btn btn-danger text-light" @onclick="@(() => DeleteQuestion(question.Id))">Delete Question</button>
+                                    </div>
+                               
+                            
                         </div>
                     }
                 </WholeListTemplate>
@@ -93,7 +100,7 @@
         var paginatedResponse = await questionRepository.GetQuestionsyId(paginationDTO, question.CompanyId);
         Questions = paginatedResponse.Response;
         totalAmountPages = paginatedResponse.TotalAmountPages;
-       
+
     }
 
     private async Task SelectedPage(int page)
@@ -102,4 +109,13 @@
         await LoadQuestions();
 
     }
+
+    private async Task DeleteQuestion(int id)
+    {
+        await questionRepository.DeleteQuestion(id);
+        await pollRepository.DeletePoll(id);
+        await LoadQuestions();
+
+    }
 }
+@*Condition that prevents a user from navigating to opinion page pnce they've voted*@

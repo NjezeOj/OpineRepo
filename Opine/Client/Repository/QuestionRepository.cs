@@ -42,6 +42,16 @@ namespace Opine.Client.Repository
             return await httpService.GetHelper<List<Question>>(baseURL, paginationDTO, id);
         }
 
-        
+        public async Task DeleteQuestion(int id)
+        {
+            var response = await httpService.Delete($"{baseURL}/{id}");
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+        }
+
+
+
     }
 }

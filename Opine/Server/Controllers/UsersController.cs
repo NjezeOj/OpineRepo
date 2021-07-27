@@ -36,13 +36,11 @@ namespace Opine.Server.Controllers
         }
 
         [HttpGet("users")]
-        public async Task<ActionResult<List<UserDTO>>> GetUser()
+        public async Task<ActionResult<List<UserDTO>>> GetUsers()
         {
             var queryable = context.Users.AsQueryable();
             return await queryable
                 .Select(x => new UserDTO { Email = x.Email, UserId = x.Id, CustomUserName = x.CustomUserName, CompanyId = x.CompanyId }).ToListAsync();
-
-
         }
 
         [HttpGet("roles")]
@@ -66,6 +64,21 @@ namespace Opine.Server.Controllers
         {
             var user = await userManager.FindByIdAsync(editRoleDTO.UserId);
             await userManager.RemoveClaimAsync(user, new Claim(ClaimTypes.Role, editRoleDTO.RoleName));
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(string id)
+        {
+            var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            context.Remove(user);
+            await context.SaveChangesAsync();
             return NoContent();
         }
 

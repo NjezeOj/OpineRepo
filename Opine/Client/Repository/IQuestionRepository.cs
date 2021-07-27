@@ -10,6 +10,7 @@ namespace Opine.Client.Repository
     public interface IQuestionRepository
     {
         Task CreateQuestion(Question quest);
+        Task DeleteQuestion(int id);
         Task<List<Question>> GetQuestions();
         Task<PaginatedResponse<List<Question>>> GetQuestionsyId(PaginationDTO paginationDTO, int id);
     }

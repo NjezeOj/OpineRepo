@@ -50,5 +50,13 @@ namespace Opine.Client.Repository
             }
         }
 
+        public async Task DeleteUser(string id)
+        {
+            var response = await httpService.Delete($"{baseURL}/{id}");
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+        }
     }
 }

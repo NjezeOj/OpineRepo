@@ -13,5 +13,6 @@ namespace Opine.Client.Repository
         Task<PaginatedResponse<List<UserDTO>>> GetUsersById(PaginationDTO paginationDTO, int id);
         Task<List<UserDTO>> GetUsers();
         Task RemoveRole(EditRoleDTO editRoleDTO);
+        Task DeleteUser(string id);
     }
 }

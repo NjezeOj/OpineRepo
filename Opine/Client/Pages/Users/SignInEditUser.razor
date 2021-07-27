@@ -1,0 +1,75 @@
+﻿@page "/adminrole"
+@inject IUserRepository userRepository
+@inject IDisplayMessage displayMessage
+@inject NavigationManager navigationManager
+@inject NotificationService NotificationService
+
+
+
+<h3>EditUser</h3>
+
+<div class="form-check-inline">
+    <select class="form-control mb-2 mr-sm-2" @bind="selectedRole">
+        <option value="0">--Select a Role--</option>
+        @foreach (var role in roles)
+        {
+            <option value="@role.RoleName">@role.RoleName</option>
+        }
+    </select>
+
+    <button class="btn btn-info mb-2 mr-sm-2" @onclick="AssignRole">Assign Role</button>
+    
+</div>
+
+@code {
+    public string UserId { get; set; }
+    List<UserDTO> Users;
+    private List<RoleDTO> roles = new List<RoleDTO>();
+    private string selectedRole = "0";
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        roles = await userRepository.GetRoles();
+        Users = await userRepository.GetUsers();
+        await GetUser();
+        Console.WriteLine(UserId);
+    }
+
+    private async Task GetUser()
+    {
+
+        var authState = await AuthenticationState;
+        var user = authState.User;
+        var identityName = user.Identity.Name;
+
+
+        if (user.Identity.IsAuthenticated)
+        {
+
+            UserId = Users.Where(u => u.Email == identityName).Select(u => u.UserId).FirstOrDefault();
+            
+        }
+
+    }
+
+    private void AssignRole() //async Task
+    {
+
+        if (selectedRole == "0")
+        {
+            var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "You Must Select a Role", Detail = "Choose A Valid Role Option", Duration = 4000 };
+            NotificationService.Notify(message);
+        }
+        else
+        {
+            //await userRepository.AssignRole(new EditRoleDTO() { RoleName = selectedRole, UserId = UserId });
+            var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Role Assigned", Detail = "Logout and Login again to get Admin privileges", Duration = 10000 };
+            NotificationService.Notify(message);
+            //navigationManager.NavigateTo("users");
+        }
+    }
+
+
+}
+

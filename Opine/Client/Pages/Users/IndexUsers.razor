@@ -12,7 +12,7 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>Company Name</th>
+                    <th>User Name</th>
                 </tr>
             </thead>
             <tbody>
@@ -21,8 +21,7 @@
                     <tr>
                         <td>
                             <a href="/users/edit/@user.UserId" class="btn btn-success">Edit</a>
-                            <button class="btn btn-danger">Delete</button>
-
+                            <button class="btn btn-danger" @onclick="@(() => DeleteUser(user.UserId))">Delete</button>
                         </td>
                         <td>
                             @user.Email
@@ -71,16 +70,21 @@
             CompanyId = Users.Where(u => u.Email == identityName).Select(u => u.CompanyId).FirstOrDefault();
             Console.WriteLine(CompanyId);
         }
-        @*CompanyId = await userService.GetCompanyId();*@
-        
 
     }
 
     private async Task LoadUsers()
     {
-
         var paginatedResponse = await userRepository.GetUsersById(paginationDTO, CompanyId);
         CompanyUsers = paginatedResponse.Response;
         totalAmountOfPages = paginatedResponse.TotalAmountPages;
     }
+
+    private async Task DeleteUser(string id)
+    {
+        await userRepository.DeleteUser(id);
+        await LoadUsers();
+
+    }
+
 }

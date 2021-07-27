@@ -1,4 +1,4 @@
-﻿@page "/responsepage"
+﻿@page "/responsepage/{QuestionId:int}"
 @inject IPollRepository pollRepository
 @inject IUserRepository userRepository
 
@@ -65,7 +65,7 @@ else{
     private async Task LoadPolls()
     {
         CompanyPolls = await pollRepository.GetPollsById(CompanyId);
-        Polls = CompanyPolls.Where(c => c.QuestionId == 1).ToList();
+        Polls = CompanyPolls.Where(c => c.QuestionId == QuestionId).ToList();
     }
 
     
