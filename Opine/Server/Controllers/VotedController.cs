@@ -19,10 +19,10 @@ namespace Opine.Server.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<Voted>>> Get(int id)
+        public async Task<ActionResult<Voted>> Get(int id)
         {
-            var queryable = context.Votes.Where(q => q.Question.CompanyId == id).AsQueryable();
-            return await queryable.ToListAsync();
+            var vote = await(context.Votes.Where(q => q.QuestionId == id)).FirstOrDefaultAsync();
+            return vote;
         }
 
         [HttpPost]

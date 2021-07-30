@@ -3,7 +3,8 @@
 @inject NavigationManager navigationManager
 @inject IUserRepository userRepository
 @inject NotificationService NotificationService
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin")]
+
 <h3>CreateToken</h3>
 
 <TokenForm Token="token" OnValidSubmit="Create" />
@@ -92,7 +93,7 @@
 
     private async Task LoadUsers()
     {
-        var paginatedResponse = await userRepository.GetUsersById(paginationDTO, CompanyId );
+        var paginatedResponse = await userRepository.GetUsersById(paginationDTO, CompanyId);
         CompanyUsers = paginatedResponse.Response;
 
     }

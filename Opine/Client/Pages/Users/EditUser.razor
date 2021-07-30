@@ -4,6 +4,7 @@
 @inject IDisplayMessage displayMessage
 @inject NavigationManager navigationManager
 @inject NotificationService NotificationService
+@attribute [Authorize(Roles="Admin")]
 
 
 
@@ -32,7 +33,7 @@
         roles = await userRepository.GetRoles();
     }
 
-    private void AssignRole() //async Task
+    private async Task AssignRole() //async Task
     {
        
         if (selectedRole == "0")
@@ -42,14 +43,14 @@
         }
         else
         {
-            //await userRepository.AssignRole(new EditRoleDTO() { RoleName = selectedRole, UserId = UserId });
+            await userRepository.AssignRole(new EditRoleDTO() { RoleName = selectedRole, UserId = UserId });
             var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Role Assigned", Detail = "", Duration = 4000 };
             NotificationService.Notify(message);
-            //navigationManager.NavigateTo("users");
+            navigationManager.NavigateTo("users");
         }
     }
 
-    private void RemoveRole()
+    private async Task RemoveRole()
     {
         if (selectedRole == "0")
         {
@@ -60,10 +61,10 @@
 
         else
         {
-            //await userRepository.RemoveRole(new EditRoleDTO() { RoleName = selectedRole, UserId = UserId });
+            await userRepository.RemoveRole(new EditRoleDTO() { RoleName = selectedRole, UserId = UserId });
             var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Role Removed", Detail = "", Duration = 4000 };
             NotificationService.Notify(message);
-            //navigationManager.NavigateTo("users");
+            navigationManager.NavigateTo("users");
         }
 
 

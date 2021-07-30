@@ -9,6 +9,6 @@ namespace Opine.Client.Repository
     public interface IVotedRepository
     {
         Task CreateVoted(Voted voted);
-        Task<List<Voted>> GetVotedById(int id);
+        Task<Voted> GetVotedById(int id);
     }
 }

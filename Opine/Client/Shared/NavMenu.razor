@@ -1,5 +1,12 @@
 ﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">Opine</a>
+    <p class="navbar-brand">Opine
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                Admin Account
+            </Authorized>
+        </AuthorizeView>
+    </p>
+    
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -57,6 +64,10 @@
                         <span class="oi oi-list-rich" aria-hidden="true"></span> QuestionForm
                     </NavLink>
                 </li>
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="token/create">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Create Token

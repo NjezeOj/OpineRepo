@@ -1,5 +1,6 @@
 ﻿@page "/questions"
 @inject IUserRepository userRepository
+@inject IVotedRepository votedRepository 
 @inject IPollRepository pollRepository
 @inject NavigationManager navigationManager
 @inject IQuestionRepository questionRepository
@@ -26,15 +27,20 @@
                                 <p class="oi oi-clock pr-2 restimelogo"></p>
                                 <p> @ts.Days:@ts.Hours:@ts.Minutes:@ts.Seconds</p>
                             </div>
-                            
-                                    <div id="flex-container" class="create-survey">
-                                        <a class="btn btn-primary" href="/question/@question.Id">Select Opinion</a>
-                                    </div>
+
+                            <div id="flex-container" class="create-survey">
+                                <button type="button" class="btn btn-primary" @onclick="@(() => SelectOpinion(question.Id))">Select Opinion</button>
+                            </div>
+                            <AuthorizeView Roles="Admin">
+                                <Authorized>
                                     <div id="flex-container">
                                         <button type="button" class="btn btn-danger text-light" @onclick="@(() => DeleteQuestion(question.Id))">Delete Question</button>
                                     </div>
-                               
+                                </Authorized>
+                            </AuthorizeView>
                             
+
+
                         </div>
                     }
                 </WholeListTemplate>
@@ -108,6 +114,16 @@
         paginationDTO.Page = page;
         await LoadQuestions();
 
+    }
+
+    private async Task SelectOpinion(int id)
+    {
+        var voted = await votedRepository.GetVotedById(id);
+        if (!voted.Completed)
+        {
+            navigationManager.NavigateTo($"question/{id}");
+        }
+        //href="/question/@question.Id"
     }
 
     private async Task DeleteQuestion(int id)

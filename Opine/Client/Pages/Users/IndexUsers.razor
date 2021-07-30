@@ -1,6 +1,8 @@
 ﻿@page "/users"
 @inject IUserRepository userRepository
 @inject IUserService userService
+@inject NavigationManager navigationManager
+@attribute [Authorize(Roles = "Admin")]
 
 <Pagination CurrentPage="@paginationDTO.Page" SelectedPage="SelectedPage"
             TotalAmountPages="totalAmountOfPages" />
@@ -18,14 +20,26 @@
             <tbody>
                 @foreach (var user in CompanyUsers)
                 {
+                    @if (user.Email == identityName)
+                    {
+                        signIn = true;
+                    }
+                    else
+                    {
+                        signIn = false;
+                    }
                     <tr>
-                        <td>
-                            <a href="/users/edit/@user.UserId" class="btn btn-success">Edit</a>
-                            <button class="btn btn-danger" @onclick="@(() => DeleteUser(user.UserId))">Delete</button>
-                        </td>
-                        <td>
-                            @user.Email
-                        </td>
+                        @if (!signIn)
+                        {
+                            <td>
+                                <a href="/users/edit/@user.UserId" class="btn btn-success">Edit</a>
+                                <button class="btn btn-danger" @onclick="@(() => DeleteUser(user.UserId))">Delete</button>
+                            </td>
+                            <td>
+                                @user.Email
+                            </td>
+                        }
+
                     </tr>
                 }
             </tbody>
@@ -37,6 +51,8 @@
     List<UserDTO> Users;
     List<UserDTO> CompanyUsers;
     private int CompanyId;
+    private bool signIn;
+    private string identityName;
     PaginationDTO paginationDTO = new PaginationDTO();
     int totalAmountOfPages;
 
@@ -61,7 +77,7 @@
 
         var authState = await AuthenticationState;
         var user = authState.User;
-        var identityName = user.Identity.Name;
+        identityName = user.Identity.Name;
 
 
         if (user.Identity.IsAuthenticated)
@@ -80,11 +96,12 @@
         totalAmountOfPages = paginatedResponse.TotalAmountPages;
     }
 
+
+
     private async Task DeleteUser(string id)
     {
         await userRepository.DeleteUser(id);
         await LoadUsers();
-
     }
 
 }

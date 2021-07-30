@@ -73,6 +73,7 @@ namespace Opine.Server.Controllers
             {
                 new Claim(ClaimTypes.Name, userinfo.Email),
                 new Claim(ClaimTypes.Email, userinfo.Email),
+               
                 
             };
 

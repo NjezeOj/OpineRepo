@@ -1,7 +1,7 @@
 ﻿@page "/tokenlist"
 @inject ITokenRepository tokenRepository
 @inject IUserRepository userRepository
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin")]
 
 <h3> Token Table</h3>
 <section>
