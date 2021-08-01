@@ -49,6 +49,7 @@ namespace Opine.Client
             services.AddScoped<ISendEmailRepository, SendEmailRepository>();
             services.AddSingleton<QuestionService, QuestionService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IEmailRepository, EmailRepository>();
 
             services.AddAuthorizationCore();
 

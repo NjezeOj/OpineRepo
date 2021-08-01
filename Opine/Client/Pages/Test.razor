@@ -1,52 +1,41 @@
-﻿@page "/encryptpage"
-@using System.Security.Cryptography
-@using System.Text 
+﻿@page "/email"
+@inject IEmailRepository EmailRepository
 
-
-<EditForm Model="EncryptedPoll" OnSubmit="Encrypt">
+<EditForm class="form-contact" Model="@contact" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
     <div class="form-group">
-        <div>
-            <InputText class="form-control border-secondary w-75" placeholder="Company Name (case-sensitive)" @bind-Value="EncryptedPoll.Option" />
-
-        </div>
+        <InputText class="form-control" placeholder="Name" @bind-Value="contact.Name" />
     </div>
-
-    <button class="btn btn-primary" type="submit">Encrypt</button>
+    <div class="form-group">
+        <InputText class="form-control" placeholder="Email" @bind-Value="contact.Email" />
+    </div>
+    <div class="form-group position-relative">
+        <InputTextArea class="form-control" placeholder="Message"
+                       @bind-Value="contact.Message" />
+    </div>
+    <div>
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <p>@message</p>
+        }
+        <button type="submit" class="button">Send email</button>
+    </div>
 </EditForm>
 
 @code{
-    private EncryptedPoll EncryptedPoll = new EncryptedPoll();
+    private string message = string.Empty;
+    private Contact contact = new Contact();
 
-    UnicodeEncoding ByteConverter = new UnicodeEncoding();
-    RSACryptoServiceProvider RSA = new RSACryptoServiceProvider();
-    byte[] plaintext;
-    byte[] encryptedtext;
-    string encyptedValue;
-
-    static public byte[] Encryption(byte[] Data, RSAParameters RSAKey, bool DoOAEPPadding)
+    private async Task HandleValidSubmit()
     {
-        try
+        var response = await EmailRepository.SendEmail(contact);
+        if (response)
         {
-            byte[] encryptedData;
-            using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
-            {
-                RSA.ImportParameters(RSAKey);
-                encryptedData = RSA.Encrypt(Data, DoOAEPPadding);
-            }
-            return encryptedData;
+            message = "Message sent!";
         }
-        catch (CryptographicException e)
+        else
         {
-            Console.WriteLine(e.Message);
-            return null;
+            message = "There was an error sending the message";
         }
-    }
-
-    private void Encrypt()
-    {
-        plaintext = ByteConverter.GetBytes(EncryptedPoll.Option);
-        encryptedtext = Encryption(plaintext, RSA.ExportParameters(false), false);
-        encyptedValue = ByteConverter.GetString(encryptedtext);
-        Console.WriteLine(encyptedValue);
     }
 }

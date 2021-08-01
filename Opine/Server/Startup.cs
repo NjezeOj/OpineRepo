@@ -13,6 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System;
 using Opine.Server.Entities;
+using Microsoft.Net.Http.Headers;
+using SendGrid.Extensions.DependencyInjection;
+using Opine.Server.Services;
 
 namespace Opine.Server
 {
@@ -31,6 +34,9 @@ namespace Opine.Server
         {
             services.AddDbContext<ApplicationDbContext>(options
                 => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddSendGrid(opt => opt.ApiKey = Configuration["SendGrid:ApiKey"]);
+            services.AddScoped<ISendEmailService, SendEmailService>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -73,6 +79,10 @@ namespace Opine.Server
             app.UseStaticFiles();
 
             app.UseRouting();
+            // Enable cors
+            app.UseCors(policyName => policyName.WithOrigins("https://localhost:5001")
+                                                .AllowAnyMethod()
+                                                .WithHeaders(HeaderNames.ContentType));
             app.UseAuthentication();
             app.UseAuthorization();
 
