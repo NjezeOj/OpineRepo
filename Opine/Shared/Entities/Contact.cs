@@ -13,5 +13,9 @@ namespace Opine.Shared.Entities
         public string Email { get; set; }
         [Required(AllowEmptyStrings = false)]
         public string Message { get; set; }
+        [Required(AllowEmptyStrings = false)]
+        public string RecipientName { get; set; }
+        [Required(AllowEmptyStrings = false)]
+        public string RecipientMail { get; set; }
     }
 }

@@ -140,8 +140,6 @@ else
     {
         var paginatedResponse = await questionRepository.GetQuestionsyId(paginationDTO, CompanyId);
         question = paginatedResponse.Response.Where(q => q.Id == QuestionId).FirstOrDefault();
-
-
     }
 
     private async Task LoadPolls()

@@ -21,11 +21,12 @@ namespace Opine.Server.Services
         {
             SendGridMessage msg = new SendGridMessage();
             EmailAddress from = new EmailAddress(contact.Email, contact.Name);
-            List<EmailAddress> receipents = new List<EmailAddress> { new EmailAddress("Njezeojinnaka@gmail.com", "Njeze Ojin") };
-
+            //List<EmailAddress> recipients = new List<EmailAddress> { new EmailAddress("Njezeojinnaka@gmail.com", "Njeze Ojin") };
+            EmailAddress recipient = new EmailAddress (contact.RecipientMail,contact.RecipientName);
             msg.SetSubject("Test Mail");
             msg.SetFrom(from);
-            msg.AddTos(receipents);
+            //msg.AddTos(recipients);
+            msg.AddTo(recipient);
             msg.PlainTextContent = contact.Message;
 
             Response response = await _sendGridClient.SendEmailAsync(msg);

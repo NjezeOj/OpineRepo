@@ -1,14 +1,16 @@
 ﻿@page "/responsepage/{QuestionId:int}"
 @inject IPollRepository pollRepository
 @inject IUserRepository userRepository
+@inject IQuestionRepository questionRepository
 
 
 @if (Polls == null)
 {
     <RadzenProgressBar class="mt-5" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="margin-bottom: 20px" />
 }
-else{
-    <h3>Should we go horse riding</h3>
+else
+{
+    <h3>@question.Ques</h3>
     <div class="row">
         <div class="col-md-6 col-sm-12 p-4">
             <RadzenChart>
@@ -25,6 +27,8 @@ else{
     List<UserDTO> Users;
     private int CompanyId;
     private string UserId;
+    private Question question = new Question();
+    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 50 };
     [Parameter] public int QuestionId { get; set; }
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
@@ -36,6 +40,7 @@ else{
             Users = await userRepository.GetUsers();
             await GetUser();
             await LoadPolls();
+            await LoadQuestions();
 
         }
         catch (Exception ex)
@@ -62,11 +67,17 @@ else{
 
     }
 
+    private async Task LoadQuestions()
+    {
+        var paginatedResponse = await questionRepository.GetQuestionsyId(paginationDTO, CompanyId);
+        question = paginatedResponse.Response.Where(q => q.Id == QuestionId).FirstOrDefault();
+    }
+
     private async Task LoadPolls()
     {
         CompanyPolls = await pollRepository.GetPollsById(CompanyId);
         Polls = CompanyPolls.Where(c => c.QuestionId == QuestionId).ToList();
     }
 
-    
+
 }

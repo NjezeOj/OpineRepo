@@ -1,5 +1,7 @@
 ﻿@page "/dashboard"
 @inject IUserRepository userRepository
+@inject IQuestionRepository questionRepository
+@inject NavigationManager navigationManager 
 
 <div class="container">
     <div class="d-flex justify-content-center mb-4">
@@ -9,11 +11,11 @@
                 <p class="mt-n2">It's good to see you</p>
             </div>
         </div>
-    </div>    
+    </div>
 </div>
 
 <div class="dashboard">
-    <a><img class="cardlinks" src="Images/cardpolls.png" /></a>
+    <a href="responsepage/@randomQuestion.Id"><img class="cardlinks" src="Images/cardpolls.png" /></a>
     <a href="responses"><img class="cardlinks" src="Images/cardresponses.png" /></a>
     <a href="questions"><img class="cardlinks" src="Images/cardtopics.png" /></a>
     <a href="question/create"><img class="cardlinks" src="Images/cardquestions.png" /></a>
@@ -21,17 +23,19 @@
 
 @code {
     List<UserDTO> Users;
+    List<Question> Questions;
     private string IdentityName;
     private string UserName;
-
-
-
+    private Question question = new Question();
+    private Question randomQuestion = new Question();
+    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 1000 };
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         Users = await userRepository.GetUsers();
         await GetUser();
+        await LoadQuestions();
     }
 
 
@@ -46,9 +50,25 @@
         if (user.Identity.IsAuthenticated)
         {
             UserName = Users.Where(u => u.Email == IdentityName).Select(u => u.CustomUserName).FirstOrDefault();
-
+            question.CompanyId = Users.Where(u => u.Email == IdentityName).Select(u => u.CompanyId).FirstOrDefault();
 
         }
 
     }
+
+    private async Task LoadQuestions()
+    {
+        var paginatedResponse = await questionRepository.GetQuestionsyId(paginationDTO, question.CompanyId);
+        Questions = paginatedResponse.Response;
+
+        var rnd = new Random();
+        randomQuestion = Questions.OrderBy(item => rnd.Next()).FirstOrDefault();
+
+        Console.WriteLine(randomQuestion.Id);
+    }
+
+
+
+
+
 }

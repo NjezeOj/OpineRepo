@@ -263,13 +263,6 @@ app {
     margin-top: 1rem;
 }
 
-/*.login-pitch {
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    margin-top: -1rem;
-}*/
-
 .login-pitch{
     text-align: center;
     padding-bottom: 5rem;
@@ -379,7 +372,7 @@ app {
     padding-right: 10rem;
 }
 
-/*****Response*/
+/*****Response*******/
 
 
 .questionbg {
@@ -397,7 +390,9 @@ app {
 }
 
 
-
+@media(max-width: 700px){
+    body {display:none}
+}
 
 
 
