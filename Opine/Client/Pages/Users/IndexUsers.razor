@@ -4,9 +4,7 @@
 @inject NavigationManager navigationManager
 @attribute [Authorize(Roles = "Admin")]
 
-<Pagination CurrentPage="@paginationDTO.Page" SelectedPage="SelectedPage"
-            TotalAmountPages="totalAmountOfPages" />
-<h3>IndexUsers</h3>
+<h3>Users</h3>
 
 <GenericList List="CompanyUsers">
     <WholeListTemplate>
@@ -46,6 +44,9 @@
         </table>
     </WholeListTemplate>
 </GenericList>
+
+<Pagination CurrentPage="@paginationDTO.Page" SelectedPage="SelectedPage"
+            TotalAmountPages="totalAmountOfPages" />
 
 @code {
     List<UserDTO> Users;

@@ -7,18 +7,15 @@
 @inject QuestionService questionService
 @attribute [Authorize]
 <section>
-    <Pagination CurrentPage="@paginationDTO.Page" TotalAmountPages="totalAmountPages"
-                SelectedPage="SelectedPage" />
-
     <div class="container">
-        <h2>Poll Statistics</h2>
+        <h2>Meeting Analysis</h2>
         <div class="d-flex justify-content-center">
             <GenericList List="Questions">
                 <WholeListTemplate>
                     @foreach (var question in Questions)
                     {
                         ts = questionService.TimeCreated(question.UploadTime);
-                        <div class="d-flex justify-content-around dashcontcolor questionbg align-items-center w-75 py-3 mt-3">
+                        <div class="d-flex flex-column flex-lg-row justify-content-around dashcontcolor questionbg align-items-center w-75 py-3 mt-3">
                             <div>
                                 <h2>@question.Ques</h2>
                                 <p>by @question.QuestionUserName</p>
@@ -28,13 +25,13 @@
                                 <p> @ts.Days:@ts.Hours:@ts.Minutes:@ts.Seconds</p>
                             </div>
 
-                            <div id="flex-container" class="create-survey">
+                            <div id="flex-container" class="">
                                 <button type="button" class="btn btn-primary" @onclick="@(() => SelectOpinion(question.Id))">Select Opinion</button>
                             </div>
                             <AuthorizeView Roles="Admin">
                                 <Authorized>
                                     <div id="flex-container">
-                                        <button type="button" class="btn btn-danger text-light" @onclick="@(() => DeleteQuestion(question.Id))">Delete Question</button>
+                                        <button type="button" class="btn btn-danger text-light mt-2 mt-lg-0" @onclick="@(() => DeleteQuestion(question.Id))">Delete Question</button>
                                     </div>
                                 </Authorized>
                             </AuthorizeView>
@@ -49,6 +46,8 @@
         <button @onclick="@CreatePoll">Create a Poll</button>
     </div>
 
+    <Pagination CurrentPage="@paginationDTO.Page" TotalAmountPages="totalAmountPages"
+                SelectedPage="SelectedPage" />
 </section>
 
 

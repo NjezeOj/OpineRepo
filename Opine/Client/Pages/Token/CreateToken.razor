@@ -43,9 +43,10 @@
                 token.CompanyId = CompanyId;
                 token.Email = token.Email.ToLower();
                 await tokenRepository.CreateToken(token);
+                token.Email = "";
                 var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Token Created", Detail = "", Duration = 4000 };
                 NotificationService.Notify(message);
-                navigationManager.NavigateTo("tokenlist");
+
             }
 
             catch (Exception ex)

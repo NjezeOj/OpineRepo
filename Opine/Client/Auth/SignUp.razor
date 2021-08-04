@@ -80,22 +80,19 @@
 
     }
 
-    private void CreateUser() //async Task
+    private async Task CreateUser() 
     {
         try
         {
             userInfo.CompanyId = Companies.Where(c => c.CompanyName == userInfo.Company).Select(c => c.Id).FirstOrDefault();
-            userInfo.Email = userInfo.Email.ToLower();
-
             var comp = questionService.GetCompObj();
-            Console.WriteLine(comp.Email);
-            Console.WriteLine(comp.CompanyName);
 
+            userInfo.Email = userInfo.Email.ToLower();
             IsValidEmail(userInfo.Email);
-            //await companyRepository.CreateCompany(comp);
-            @*var userToken = await accountsRepository.Register(userInfo);
-                await loginService.Login(userToken.Token);
-                navigationManager.NavigateTo("/adminrole");*@
+            await companyRepository.CreateCompany(comp);
+            var userToken = await accountsRepository.Register(userInfo);
+            await loginService.Login(userToken.Token);
+            navigationManager.NavigateTo("/adminrole");
         }
 
         catch (Exception ex)

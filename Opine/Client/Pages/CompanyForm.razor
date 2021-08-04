@@ -95,12 +95,9 @@
         {
             try
             {
-                //Company.Email = Company.Email.ToLower();
-                //await companyRepository.CreateCompany(company);
+                Company.Email = Company.Email.ToLower();
                 questionService.SetCompObj(Company);
                 navigationManager.NavigateTo("/signup");
-
-                
             }
 
             catch (Exception ex)

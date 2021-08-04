@@ -5,10 +5,6 @@
 
 <h3> Token Table</h3>
 <section>
-
-    <Pagination CurrentPage="@paginationDTO.Page" TotalAmountPages="totalAmountPages"
-                SelectedPage="SelectedPage" />
-
     <div class="container">
         <GenericList List="Tokens">
             <WholeListTemplate>
@@ -40,10 +36,10 @@
             </WholeListTemplate>
         </GenericList>
     </div>
-
-
-
 </section>
+
+<Pagination CurrentPage="@paginationDTO.Page" TotalAmountPages="totalAmountPages"
+            SelectedPage="SelectedPage" />
 
 @code {
     List<Token> Tokens;

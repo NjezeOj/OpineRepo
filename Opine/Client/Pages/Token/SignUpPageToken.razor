@@ -66,19 +66,15 @@
 
 
 @code {
-
     List<Token> Tokens;
     private Token token = new Token();
     private UserInfo userInfo = new UserInfo();
     List<Company> Companies;
 
-    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 100 };
+    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 100000 };
 
     [Parameter] public Guid TokenId { get; set; }
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
-
-    //GEt company Id by user
-    //Get token by ID
 
     protected override async Task OnInitializedAsync()
     {
@@ -96,25 +92,16 @@
 
     private async Task SignUp()
     {
-
-        //Console.WriteLine(TokenId.ToString());
         var tokenObj = Tokens.Where(t => t.TokenId.ToString() == TokenId.ToString()).FirstOrDefault();
-        //var tokenObj = Tokens.Where(t => t.TokenId.Equals(TokenId, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
         userInfo.CompanyId = tokenObj.CompanyId;
         userInfo.Company = Companies.Where(c => c.Id == userInfo.CompanyId).Select(c => c.CompanyName).FirstOrDefault();
 
+        userInfo.Email = userInfo.Email.ToLower();
         if (userInfo.Email == tokenObj.Email)
         {
             try
             {
-
-                Console.WriteLine(userInfo.Company);
-                Console.WriteLine(userInfo.CompanyId);
-                Console.WriteLine(userInfo.CustomUserName);
-                Console.WriteLine(userInfo.Email);
-
-                userInfo.Email = userInfo.Email.ToLower();
                 IsValidEmail(userInfo.Email);
 
                 var userToken = await accountsRepository.Register(userInfo);
@@ -135,20 +122,6 @@
             var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registeration Failed", Detail = "Invalid Token Or Email", Duration = 4000 };
             NotificationService.Notify(message);
         }
-
-
-
-
-
-
-
-
-        @*var userToken = await accountsRepository.Register(userInfo);
-            await loginService.Login(userToken.Token);*@
-
-
-
-
     }
 
 

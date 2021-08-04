@@ -146,55 +146,35 @@ else
     {
         CompanyPolls = await pollRepository.GetPollsById(CompanyId);
         Polls = CompanyPolls.Where(c => c.QuestionId == QuestionId).ToList();
-        //Polls = await pollRepository.GetPoll();
-        //check if QuestionId == questionId
-
-
     }
 
 
-    private void ShowNotification() //private async Task
+    private async Task ShowNotification()
     {
         //CREATING POLL
-        @*if(Polls.Count == 0)
+        if(Polls.Count == 0)
             {
                 if (value == 1)
                 {
                     pollA.Count = 1;
                     pollA.Option = "A";
                     pollA.QuestionId = QuestionId;
-                    Console.WriteLine("A object");
-                    Console.WriteLine(pollA.Count);
-                    Console.WriteLine(pollA.Option);
-                    Console.WriteLine(pollA.QuestionId);
                     await pollRepository.CreatePoll(pollA);
 
 
                     pollB.Count = 0;
                     pollB.Option = "B";
                     pollB.QuestionId = QuestionId;
-                    Console.WriteLine("B object");
-                    Console.WriteLine(pollB.Count);
-                    Console.WriteLine(pollB.Option);
-                    Console.WriteLine(pollB.QuestionId);
                     await pollRepository.CreatePoll(pollB);
 
                     pollC.Count = 0;
                     pollC.Option = "C";
                     pollC.QuestionId = QuestionId;
-                    Console.WriteLine("C object");
-                    Console.WriteLine(pollC.Count);
-                    Console.WriteLine(pollC.Option);
-                    Console.WriteLine(pollC.QuestionId);
                     await pollRepository.CreatePoll(pollC);
 
                     pollD.Count = 0;
                     pollD.Option = "D";
                     pollD.QuestionId = QuestionId;
-                    Console.WriteLine("D object");
-                    Console.WriteLine(pollD.Count);
-                    Console.WriteLine(pollD.Option);
-                    Console.WriteLine(pollD.QuestionId);
                     await pollRepository.CreatePoll(pollD);
                 }
                 if (value == 2)
@@ -291,7 +271,7 @@ else
                     await pollRepository.UpdatePoll(pollD);
                 }
 
-            }*@
+            }
 
         //UPDATING SUBMITTING VOTING LOGIC
 
@@ -300,7 +280,7 @@ else
         voted.QuestionId = QuestionId;
         voted.UserId = UserId;
 
-        ///await votedRepository.CreateVoted(voted);
+        await votedRepository.CreateVoted(voted);
         var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Successful Submission", Detail = "", Duration = 4000 };
         NotificationService.Notify(message);
         NavigationManager.NavigateTo("questions");

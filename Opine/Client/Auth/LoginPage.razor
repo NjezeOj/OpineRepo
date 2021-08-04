@@ -69,8 +69,6 @@
             IsValidEmail(loginInfo.Email);
             var userToken = await accountsRepository.Login(loginInfo);
             await loginService.Login(userToken.Token);
-
-
             navigationManager.NavigateTo("");
         }
         catch (Exception ex)
@@ -79,9 +77,6 @@
             NotificationService.Notify(message);
             Console.WriteLine(ex.Message);
         }
-
-
-
     }
 
     bool IsValidEmail(string email)
@@ -101,4 +96,4 @@
 }
 
 //test@gmail.com
-    //Aa123456!   @*Console.WriteLine(loginInfo.Email);*@
+    //Aa123456! 
