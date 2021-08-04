@@ -48,12 +48,12 @@
         {
 
             UserId = Users.Where(u => u.Email == identityName).Select(u => u.UserId).FirstOrDefault();
-            
+
         }
 
     }
 
-    private void AssignRole() //async Task
+    private async Task AssignRole()
     {
 
         if (selectedRole == "0")
@@ -63,10 +63,10 @@
         }
         else
         {
-            //await userRepository.AssignRole(new EditRoleDTO() { RoleName = selectedRole, UserId = UserId });
+            await userRepository.AssignRole(new EditRoleDTO() { RoleName = selectedRole, UserId = UserId });
             var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Role Assigned", Detail = "Logout and Login again to get Admin privileges", Duration = 10000 };
             NotificationService.Notify(message);
-            //navigationManager.NavigateTo("users");
+            navigationManager.NavigateTo("dashboard");
         }
     }
 
