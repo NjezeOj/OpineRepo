@@ -15,7 +15,7 @@
                     @foreach (var question in Questions)
                     {
                         ts = questionService.TimeCreated(question.UploadTime);
-                        <div class="d-flex flex-column flex-lg-row justify-content-around dashcontcolor questionbg align-items-center w-75 py-3 mt-3">
+                        <div class="d-flex flex-column flex-lg-row justify-content-around questionbg align-items-center w-75 py-3 mt-3">
                             <div>
                                 <h2>@question.Ques</h2>
                                 <p>by @question.QuestionUserName</p>

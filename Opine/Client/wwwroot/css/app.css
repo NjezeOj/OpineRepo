@@ -214,6 +214,18 @@ app {
     background-color: lightsteelblue;
 }
 
+.indexbg {
+        /* The image used */
+    background-image: url("/Images/landingpagejp.jpeg");
+    /* Full height */
+    height: 100%;
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
 /*Login*/
 .login {
     height: 100%;
@@ -376,7 +388,7 @@ app {
 
 
 .questionbg {
-    background-color: lightgrey;
+    background-color: #DBDBDF;
     border-radius: 20px;
 }
 
@@ -389,13 +401,27 @@ app {
     padding-top: 2px;
 }
 
+@media(max-width: 700px) {
 
-@media(max-width: 700px){
-    body {display:none}
+    .login {
+        height: 100%;
+        width: 116%;
+        
+        position:relative;
+        
+        overflow-x: hidden;
+        top: -24px;
+        left:-25px;
+        right:40px;
+        
+    }
+
+    .ssdiv2 {
+        bottom:auto;
+    }
+
+    
 }
-
-
-
 
 
 
