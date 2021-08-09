@@ -25,15 +25,24 @@ namespace Opine.Client.Repository
             }
         }
 
-        public async Task<Voted> GetVotedById(int id)
+        public async Task<Voted> GetVotedById(int id, string userId)
         {
-            var response = await httpService.Get<Voted>($"{baseURL}/{id}");
+            var response = await httpService.Get<Voted>($"{baseURL}/{id}/{userId}");
             if (!response.Success)
             {
                 throw new ApplicationException(await response.GetBody());
             }
 
             return response.Response;
+        }
+
+        public async Task DeleteVoted(int id)
+        {
+            var response = await httpService.Delete($"{baseURL}/{id}");
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
         }
     }
 }

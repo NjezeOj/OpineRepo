@@ -60,7 +60,10 @@ namespace Opine.Server.Controllers
             }
 
             foreach (var poll in polls)
+            {
                 context.Remove(poll);
+            }
+           
             await context.SaveChangesAsync();
             return NoContent();
         }

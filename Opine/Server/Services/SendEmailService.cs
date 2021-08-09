@@ -1,4 +1,5 @@
-﻿using Opine.Shared.Entities;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Opine.Shared.Entities;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
@@ -21,12 +22,11 @@ namespace Opine.Server.Services
         {
             SendGridMessage msg = new SendGridMessage();
             EmailAddress from = new EmailAddress(contact.Email, contact.Name);
-            //List<EmailAddress> recipients = new List<EmailAddress> { new EmailAddress("Njezeojinnaka@gmail.com", "Njeze Ojin") };
-            EmailAddress recipient = new EmailAddress (contact.RecipientMail,contact.RecipientName);
+            List<EmailAddress> recipients = new List<EmailAddress> { new EmailAddress("Njezeojin@yandex.com","Ojin") };
+            
             msg.SetSubject("Test Mail");
             msg.SetFrom(from);
-            //msg.AddTos(recipients);
-            msg.AddTo(recipient);
+            msg.AddTos(recipients);
             msg.PlainTextContent = contact.Message;
 
             Response response = await _sendGridClient.SendEmailAsync(msg);

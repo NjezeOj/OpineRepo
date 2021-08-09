@@ -70,7 +70,19 @@ namespace Opine.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
+            var votes = await context.Votes.Where(x => x.UserId == id).ToListAsync();
             var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (votes == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var vote in votes)
+            {
+                context.Remove(vote);
+            }
+            
 
             if (user == null)
             {

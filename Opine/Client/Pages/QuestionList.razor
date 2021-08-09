@@ -1,6 +1,7 @@
 ﻿@page "/questions"
 @inject IUserRepository userRepository
 @inject IVotedRepository votedRepository 
+@inject IUserRepository userRepository
 @inject IPollRepository pollRepository
 @inject NavigationManager navigationManager
 @inject IQuestionRepository questionRepository
@@ -9,13 +10,13 @@
 <section>
     <div class="container">
         <h2>Meeting Analysis</h2>
-        <div class="d-flex justify-content-center">
+        <div class="d-flex flex-column">
             <GenericList List="Questions">
                 <WholeListTemplate>
                     @foreach (var question in Questions)
                     {
                         ts = questionService.TimeCreated(question.UploadTime);
-                        <div class="d-flex flex-column flex-lg-row justify-content-around questionbg align-items-center w-75 py-3 mt-3">
+                        <div class="d-flex flex-column flex-lg-row justify-content-around questionbg align-items-center w-100 py-3 mt-3">
                             <div>
                                 <h2>@question.Ques</h2>
                                 <p>by @question.QuestionUserName</p>
@@ -26,7 +27,7 @@
                             </div>
 
                             <div id="flex-container" class="">
-                                <button type="button" class="btn btn-primary" @onclick="@(() => SelectOpinion(question.Id))">Select Opinion</button>
+                                <a class="btn btn-success" href="question/@question.Id" >Select Opinion</a>
                             </div>
                             <AuthorizeView Roles="Admin">
                                 <Authorized>
@@ -58,7 +59,9 @@
 
     TimeSpan ts;
     private int totalAmountPages;
+    private string UserId;
     private Question question = new Question();
+    private Voted voted = new Voted();
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -87,7 +90,7 @@
         {
 
             question.CompanyId = Users.Where(u => u.Email == identityName).Select(u => u.CompanyId).FirstOrDefault();
-
+            UserId = Users.Where(u => u.Email == identityName).Select(u => u.UserId).FirstOrDefault();
         }
 
     }
@@ -112,20 +115,11 @@
 
     }
 
-    private async Task SelectOpinion(int id)
-    {
-        var voted = await votedRepository.GetVotedById(id);
-        if (!voted.Completed)
-        {
-            navigationManager.NavigateTo($"question/{id}");
-        }
-        //href="/question/@question.Id"
-    }
-
     private async Task DeleteQuestion(int id)
     {
         await questionRepository.DeleteQuestion(id);
         await pollRepository.DeletePoll(id);
+        await votedRepository.DeleteVoted(id);
         await LoadQuestions();
 
     }

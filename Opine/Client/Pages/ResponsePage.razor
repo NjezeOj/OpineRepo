@@ -28,7 +28,7 @@ else
     private int CompanyId;
     private string UserId;
     private Question question = new Question();
-    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 50 };
+    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 1000000 };
     [Parameter] public int QuestionId { get; set; }
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 

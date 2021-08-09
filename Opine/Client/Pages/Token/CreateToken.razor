@@ -34,11 +34,6 @@
         {
             try
             {
-                Console.WriteLine("create method");
-                Console.WriteLine(token.TokenId.ToString());
-                Console.WriteLine(token.Email);
-                Console.WriteLine(token.CompanyId);
-
                 token.TokenId = obj;
                 token.CompanyId = CompanyId;
                 token.Email = token.Email.ToLower();
@@ -62,17 +57,6 @@
             var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registeration Failed", Detail = "Email Or Company Name exists", Duration = 4000 };
             NotificationService.Notify(message);
         }
-
-
-
-
-
-
-
-
-        //TokenId
-        //Email
-        //CompanyId
     }
 
     private async Task GetUser()
@@ -87,7 +71,7 @@
         {
 
             CompanyId = Users.Where(u => u.Email == identityName).Select(u => u.CompanyId).FirstOrDefault();
-            Console.WriteLine(CompanyId);
+            
         }
 
     }
@@ -113,10 +97,4 @@
     }
 }
 
-@*
-        can't have two users with the same email in the same company
-    -Get companyID
-    -list users with respect to users
-    -check if email is already in company
-*@
 

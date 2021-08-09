@@ -9,12 +9,6 @@
     <div class="form-group">
         <InputText class="form-control" placeholder="Email" @bind-Value="contact.Email" />
     </div>
-    <div class="form-group">
-        <InputText class="form-control" placeholder="RecipientEmail" @bind-Value="contact.RecipientMail" />
-    </div>
-    <div class="form-group">
-        <InputText class="form-control" placeholder="RecipientName" @bind-Value="contact.RecipientName" />
-    </div>
     <div class="form-group position-relative">
         <InputTextArea class="form-control" placeholder="Message"
                        @bind-Value="contact.Message" />
@@ -34,7 +28,7 @@
 
     private async Task HandleValidSubmit()
     {
-        var response = await EmailRepository.SendEmail(contact);
+        bool response = await EmailRepository.SendEmail(contact);
         if (response)
         {
             message = "Message sent!";

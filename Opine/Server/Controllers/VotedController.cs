@@ -18,10 +18,10 @@ namespace Opine.Server.Controllers
             this.context = context;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Voted>> Get(int id)
+        [HttpGet("{id}/{userId}")]
+        public async Task<ActionResult<Voted>> Get(int id, string userId)
         {
-            var vote = await(context.Votes.Where(q => q.QuestionId == id)).FirstOrDefaultAsync();
+            var vote = await(context.Votes.Where(q => q.QuestionId == id).Where(q => q.UserId == userId)).FirstOrDefaultAsync();
             return vote;
         }
 
@@ -31,6 +31,21 @@ namespace Opine.Server.Controllers
             context.Add(voted);
             await context.SaveChangesAsync();
             return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var votes = await context.Votes.Where(x => x.QuestionId == id).ToListAsync();
+
+            foreach(var vote in votes)
+            {
+                context.Remove(vote);
+            }
+
+            await context.SaveChangesAsync();
+            return Ok();
+
         }
     }
 }

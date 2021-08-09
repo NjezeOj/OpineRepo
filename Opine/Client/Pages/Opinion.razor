@@ -5,6 +5,7 @@
 @inject IPollRepository pollRepository
 @inject NavigationManager NavigationManager
 @inject NotificationService NotificationService
+@attribute [Authorize]
 
 @if (@question.A == null)
 {
@@ -92,7 +93,8 @@ else
     private Voted voted = new Voted();
     private int CompanyId;
     private string UserId;
-    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 50 };
+    private bool hasVoted;
+    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 10000 };
 
     [Parameter] public int QuestionId { get; set; }
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
@@ -112,6 +114,7 @@ else
             await GetUser();
             await LoadQuestions();
             await LoadPolls();
+            hasVoted = await HasVoted();
 
         }
         catch (Exception ex)
@@ -151,127 +154,142 @@ else
 
     private async Task ShowNotification()
     {
-        //CREATING POLL
-        if(Polls.Count == 0)
+
+        if (hasVoted)
+        {
+            var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Opinion Not Recorded", Detail = "You've Selected An Opinion", Duration = 4000 };
+            NotificationService.Notify(message);
+
+        }
+        else
+        {
+            await VoteLogic();
+        }
+
+    }
+   
+    private async Task VoteLogic()
+    {
+        if (Polls.Count == 0)
+        {
+            if (value == 1)
             {
-                if (value == 1)
-                {
-                    pollA.Count = 1;
-                    pollA.Option = "A";
-                    pollA.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollA);
+                pollA.Count = 1;
+                pollA.Option = "A";
+                pollA.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollA);
 
 
-                    pollB.Count = 0;
-                    pollB.Option = "B";
-                    pollB.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollB);
+                pollB.Count = 0;
+                pollB.Option = "B";
+                pollB.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollB);
 
-                    pollC.Count = 0;
-                    pollC.Option = "C";
-                    pollC.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollC);
+                pollC.Count = 0;
+                pollC.Option = "C";
+                pollC.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollC);
 
-                    pollD.Count = 0;
-                    pollD.Option = "D";
-                    pollD.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollD);
-                }
-                if (value == 2)
-                {
-                    pollA.Count = 0;
-                    pollA.Option = "A";
-                    pollA.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollA);
-
-                    pollB.Count = 1;
-                    pollB.Option = "B";
-                    pollB.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollB);
-
-                    pollC.Count = 0;
-                    pollC.Option = "C";
-                    pollC.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollC);
-
-                    pollD.Count = 0;
-                    pollD.Option = "D";
-                    pollD.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollD);
-                }
-                if (value == 3)
-                {
-                    pollA.Count = 0;
-                    pollA.Option = "A";
-                    pollA.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollA);
-
-                    pollB.Count = 0;
-                    pollB.Option = "B";
-                    pollB.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollB);
-
-                    pollC.Count = 1;
-                    pollC.Option = "C";
-                    pollC.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollC);
-
-                    pollD.Count = 0;
-                    pollD.Option = "D";
-                    pollD.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollD);
-                }
-                if (value == 4)
-                {
-                    pollA.Count = 0;
-                    pollA.Option = "A";
-                    pollA.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollA);
-
-                    pollB.Count = 0;
-                    pollB.Option = "B";
-                    pollB.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollB);
-
-                    pollC.Count = 0;
-                    pollC.Option = "C";
-                    pollC.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollC);
-
-                    pollD.Count = 1;
-                    pollD.Option = "D";
-                    pollD.QuestionId = QuestionId;
-                    await pollRepository.CreatePoll(pollD);
-                }
+                pollD.Count = 0;
+                pollD.Option = "D";
+                pollD.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollD);
             }
-            else
+            if (value == 2)
             {
-                if(value == 1)
-                {
-                    pollA = Polls.Where(p => p.Option == "A").FirstOrDefault();
-                    pollA.Count += 1;
-                    await pollRepository.UpdatePoll(pollA);
-                }
-                if (value == 2)
-                {
-                    pollB = Polls.Where(p => p.Option == "B").FirstOrDefault();
-                    pollB.Count += 1;
-                    await pollRepository.UpdatePoll(pollB);
-                }
-                if (value == 3)
-                {
-                    pollC = Polls.Where(p => p.Option == "C").FirstOrDefault();
-                    pollC.Count += 1;
-                    await pollRepository.UpdatePoll(pollC);
-                }
-                if (value == 4)
-                {
-                    pollD = Polls.Where(p => p.Option == "D").FirstOrDefault();
-                    pollD.Count += 1;
-                    await pollRepository.UpdatePoll(pollD);
-                }
+                pollA.Count = 0;
+                pollA.Option = "A";
+                pollA.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollA);
 
+                pollB.Count = 1;
+                pollB.Option = "B";
+                pollB.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollB);
+
+                pollC.Count = 0;
+                pollC.Option = "C";
+                pollC.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollC);
+
+                pollD.Count = 0;
+                pollD.Option = "D";
+                pollD.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollD);
             }
+            if (value == 3)
+            {
+                pollA.Count = 0;
+                pollA.Option = "A";
+                pollA.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollA);
+
+                pollB.Count = 0;
+                pollB.Option = "B";
+                pollB.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollB);
+
+                pollC.Count = 1;
+                pollC.Option = "C";
+                pollC.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollC);
+
+                pollD.Count = 0;
+                pollD.Option = "D";
+                pollD.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollD);
+            }
+            if (value == 4)
+            {
+                pollA.Count = 0;
+                pollA.Option = "A";
+                pollA.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollA);
+
+                pollB.Count = 0;
+                pollB.Option = "B";
+                pollB.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollB);
+
+                pollC.Count = 0;
+                pollC.Option = "C";
+                pollC.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollC);
+
+                pollD.Count = 1;
+                pollD.Option = "D";
+                pollD.QuestionId = QuestionId;
+                await pollRepository.CreatePoll(pollD);
+            }
+        }
+        else
+        {
+            if (value == 1)
+            {
+                pollA = Polls.Where(p => p.Option == "A").FirstOrDefault();
+                pollA.Count += 1;
+                await pollRepository.UpdatePoll(pollA);
+            }
+            if (value == 2)
+            {
+                pollB = Polls.Where(p => p.Option == "B").FirstOrDefault();
+                pollB.Count += 1;
+                await pollRepository.UpdatePoll(pollB);
+            }
+            if (value == 3)
+            {
+                pollC = Polls.Where(p => p.Option == "C").FirstOrDefault();
+                pollC.Count += 1;
+                await pollRepository.UpdatePoll(pollC);
+            }
+            if (value == 4)
+            {
+                pollD = Polls.Where(p => p.Option == "D").FirstOrDefault();
+                pollD.Count += 1;
+                await pollRepository.UpdatePoll(pollD);
+            }
+
+        }
 
         //UPDATING SUBMITTING VOTING LOGIC
 
@@ -284,6 +302,21 @@ else
         var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Successful Submission", Detail = "", Duration = 4000 };
         NotificationService.Notify(message);
         NavigationManager.NavigateTo("questions");
+    }
+
+
+    private async Task<bool> HasVoted()
+    {
+        var vote = await votedRepository.GetVotedById(QuestionId, UserId);
+
+        if (vote == null)
+        {
+            return false;
+        }
+        else {
+            
+            return true;
+        }
 
     }
 

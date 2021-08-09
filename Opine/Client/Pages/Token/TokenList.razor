@@ -1,6 +1,8 @@
 ﻿@page "/tokenlist"
 @inject ITokenRepository tokenRepository
 @inject IUserRepository userRepository
+@inject IEmailRepository emailRepository
+@inject NotificationService NotificationService
 @attribute [Authorize(Roles = "Admin")]
 
 <h3> Token Table</h3>
@@ -11,6 +13,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            @*<th></th>*@
                             <th></th>
                             <th>Token</th>
                             <th>Email</th>
@@ -23,6 +26,9 @@
                                 <td>
                                     <button class="btn btn-danger" @onclick="@(() => DeleteToken(token.Id))">Delete</button>
                                 </td>
+                                @*<td>
+                                    <button class="btn btn-success" @onclick="@(() => SendEmail(token.Email))">Send Token Mail</button>
+                                </td>*@
                                 <td>
                                     @token.TokenId
                                 </td>
@@ -47,7 +53,9 @@
     PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 2 };
 
     private int totalAmountPages;
+    private string identityName;
     private Question question = new Question();
+    private Contact contact = new Contact();
     [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -69,7 +77,7 @@
 
         var authState = await AuthenticationState;
         var user = authState.User;
-        var identityName = user.Identity.Name;
+        identityName = user.Identity.Name;
 
 
         if (user.Identity.IsAuthenticated)
@@ -101,5 +109,26 @@
     {
         await tokenRepository.DeleteToken(id);
         await LoadTokens();
+    }
+
+    private async Task SendEmail(string userEmail)
+    {
+        @*contact.Name = identityName;
+        contact.Email = identityName;
+        contact.Message = $"Create your account using this signup link with the email given to the Admin /signup/{userEmail}";
+        contact.RecipientName = "New User";
+        contact.RecipientMail = "njezeojinnaka@gmail.com";
+
+        var response = await emailRepository.SendEmail(contact);
+        if (response)
+        {
+            var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Mail Sent", Detail = "", Duration = 4000 };
+            NotificationService.Notify(message);
+        }
+        else
+        {
+            var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Mail not sent", Detail = "", Duration = 4000 };
+            NotificationService.Notify(message);
+        }*@
     }
 }
