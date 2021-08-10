@@ -89,14 +89,14 @@
         }
     }
 
-    private void CreateCompany()
+    private async Task CreateCompany()
     {
         if (Check())
         {
             try
             {
                 Company.Email = Company.Email.ToLower();
-                questionService.SetCompObj(Company);
+                await companyRepository.CreateCompany(Company);
                 navigationManager.NavigateTo("/signup");
             }
 

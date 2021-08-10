@@ -5,20 +5,20 @@
 
 <div class="container">
     <div class="d-flex justify-content-center mb-4">
-        <div class="dashcontcolor w-50 rounded-lg ">
+        <div class="dashcontcolor w-50 rounded-lg">
             <div class="ml-4 pt-4 pb-1">
                 <h2>Hello @UserName</h2>
                 <p class="mt-n2">It's good to see you</p>
             </div>
+            
+            <img class="dashboard-ill" src="Images/Illustration.png"/>
+            
         </div>
     </div>
 </div>
 
 <div class="container">
     <div class="row justify-content-around">
-        <div class="col-md-3 d-flex justify-content-center mt-4">
-            <a href="responsepage/@randomQuestion.Id"><img class="w-100" src="Images/cardpolls.png" /></a>
-        </div>
         <div class="col-md-3 d-flex justify-content-center mt-4">
             <a href="responses"><img class="w-100" src="Images/cardresponses.png" /></a>
         </div>
@@ -45,7 +45,7 @@
     {
         Users = await userRepository.GetUsers();
         await GetUser();
-        await LoadQuestions();
+        
     }
 
 
@@ -65,20 +65,5 @@
         }
 
     }
-
-    private async Task LoadQuestions()
-    {
-        var paginatedResponse = await questionRepository.GetQuestionsyId(paginationDTO, question.CompanyId);
-        Questions = paginatedResponse.Response;
-
-        var rnd = new Random();
-        randomQuestion = Questions.OrderBy(item => rnd.Next()).FirstOrDefault();
-
-        Console.WriteLine(randomQuestion.Id);
-    }
-
-
-
-
 
 }

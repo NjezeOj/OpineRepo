@@ -7,6 +7,7 @@
 @inject NavigationManager navigationManager
 @inject NotificationService NotificationService
 
+
 <EditForm Model="userInfo" OnSubmit="CreateUser">
     <div class="login div1">
         <div class="logo1div">
@@ -76,22 +77,22 @@
     protected override async Task OnInitializedAsync()
     {
         await LoadCompanies();
-
     }
 
-    private async Task CreateUser() 
+    private async Task CreateUser()
     {
         try
         {
             userInfo.CompanyId = Companies.Where(c => c.CompanyName == userInfo.Company).Select(c => c.Id).FirstOrDefault();
-            var comp = questionService.GetCompObj();
 
             userInfo.Email = userInfo.Email.ToLower();
             IsValidEmail(userInfo.Email);
-            await companyRepository.CreateCompany(comp);
+
             var userToken = await accountsRepository.Register(userInfo);
             await loginService.Login(userToken.Token);
-            navigationManager.NavigateTo("/adminrole");
+
+
+            navigationManager.NavigateTo("/adminrole/2786");
         }
 
         catch (Exception ex)

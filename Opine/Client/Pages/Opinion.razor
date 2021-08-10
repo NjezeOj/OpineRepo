@@ -297,6 +297,7 @@ else
         voted.Completed = true;
         voted.QuestionId = QuestionId;
         voted.UserId = UserId;
+        voted.AppType = "web";
 
         await votedRepository.CreateVoted(voted);
         var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Successful Submission", Detail = "", Duration = 4000 };

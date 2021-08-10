@@ -13,7 +13,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            @*<th></th>*@
+                            <th></th>
                             <th></th>
                             <th>Token</th>
                             <th>Email</th>
@@ -24,11 +24,11 @@
                         {
                             <tr>
                                 <td>
+                                    <button class="btn btn-success" @onclick="@(() => SendEmail(token.Email, token.TokenId))">Send Signup Link</button>
+                                </td>
+                                <td>
                                     <button class="btn btn-danger" @onclick="@(() => DeleteToken(token.Id))">Delete</button>
                                 </td>
-                                @*<td>
-                                    <button class="btn btn-success" @onclick="@(() => SendEmail(token.Email))">Send Token Mail</button>
-                                </td>*@
                                 <td>
                                     @token.TokenId
                                 </td>
@@ -50,7 +50,7 @@
 @code {
     List<Token> Tokens;
     List<UserDTO> Users;
-    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 2 };
+    PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 5 };
 
     private int totalAmountPages;
     private string identityName;
@@ -95,7 +95,6 @@
         var paginatedResponse = await tokenRepository.GetTokensyId(paginationDTO, question.CompanyId);
         Tokens = paginatedResponse.Response;
         totalAmountPages = paginatedResponse.TotalAmountPages;
-
     }
 
     private async Task SelectedPage(int page)
@@ -111,13 +110,14 @@
         await LoadTokens();
     }
 
-    private async Task SendEmail(string userEmail)
+    private async Task SendEmail(string userEmail, Guid tokenId)
     {
-        @*contact.Name = identityName;
-        contact.Email = identityName;
-        contact.Message = $"Create your account using this signup link with the email given to the Admin /signup/{userEmail}";
-        contact.RecipientName = "New User";
-        contact.RecipientMail = "njezeojinnaka@gmail.com";
+        contact.Name = "New User";
+        contact.Email = "njezeojinnaka@gmail.com"; //userEmail
+        contact.Message = $"<p> Dear User, </p>" +
+                $"<p>Create your account using this signup link https://localhost:44357/signup/{tokenId} .Use the Email Address provided to the admin.</p>" +
+                $"<p>Regards, Admin. </p>";
+
 
         var response = await emailRepository.SendEmail(contact);
         if (response)
@@ -129,6 +129,6 @@
         {
             var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Mail not sent", Detail = "", Duration = 4000 };
             NotificationService.Notify(message);
-        }*@
+        }
     }
 }

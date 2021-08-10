@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Opine.Shared.Entities;
+﻿using Opine.Shared.Entities;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System;
@@ -21,15 +20,18 @@ namespace Opine.Server.Services
         public async Task<bool> SendEmail(Contact contact)
         {
             SendGridMessage msg = new SendGridMessage();
-            EmailAddress from = new EmailAddress(contact.Email, contact.Name);
-            List<EmailAddress> recipients = new List<EmailAddress> { new EmailAddress("Njezeojin@yandex.com","Ojin") };
+            EmailAddress from = new EmailAddress("Njezeojin@yandex.com", "Opine Poll");
+            List<EmailAddress> recipients = new List<EmailAddress> { new EmailAddress(contact.Email, contact.Name) };
             
             msg.SetSubject("Test Mail");
             msg.SetFrom(from);
             msg.AddTos(recipients);
-            msg.PlainTextContent = contact.Message;
+            msg.HtmlContent = contact.Message;
 
             Response response = await _sendGridClient.SendEmailAsync(msg);
+
+            /*Console.WriteLine(response.StatusCode);
+            Console.WriteLine(await response.Body.ReadAsStringAsync());*/
 
             if (Convert.ToInt32(response.StatusCode) >= 400)
             {
