@@ -97,6 +97,7 @@
         userInfo.CompanyId = tokenObj.CompanyId;
         userInfo.Company = Companies.Where(c => c.Id == userInfo.CompanyId).Select(c => c.CompanyName).FirstOrDefault();
 
+        userInfo.Company = userInfo.Company.ToLower();
         userInfo.Email = userInfo.Email.ToLower();
         if (userInfo.Email == tokenObj.Email)
         {

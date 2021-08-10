@@ -96,6 +96,7 @@
             try
             {
                 Company.Email = Company.Email.ToLower();
+                Company.CompanyName = Company.CompanyName.ToLower();
                 await companyRepository.CreateCompany(Company);
                 navigationManager.NavigateTo("/signup");
             }

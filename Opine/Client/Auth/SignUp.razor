@@ -86,6 +86,7 @@
             userInfo.CompanyId = Companies.Where(c => c.CompanyName == userInfo.Company).Select(c => c.Id).FirstOrDefault();
 
             userInfo.Email = userInfo.Email.ToLower();
+            userInfo.Company = userInfo.Company.ToLower();
             IsValidEmail(userInfo.Email);
 
             var userToken = await accountsRepository.Register(userInfo);
