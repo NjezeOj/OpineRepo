@@ -35,7 +35,7 @@
             <p>Enter company details to create account</p>
             <div class="form-group">
                 <div>
-                    <InputText class="form-control border-secondary w-75" placeholder="Company Name (case-sensitive)" @bind-Value="@Company.CompanyName" />
+                    <InputText class="form-control border-secondary w-75" placeholder="Company Name" @bind-Value="@Company.CompanyName" />
                     <ValidationMessage For="@(() => Company.CompanyName)" />
                 </div>
             </div>
@@ -120,6 +120,7 @@
         var paginatedResponse = await companyRepository.GetCompanies(paginationDTO);
         Companies = paginatedResponse.Response;
 
+        
     }
 
 
