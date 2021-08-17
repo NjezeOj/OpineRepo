@@ -113,7 +113,7 @@
     private async Task SendEmail(string userEmail, Guid tokenId)
     {
         contact.Name = "New User";
-        contact.Email = "njezeojinnaka@gmail.com"; //userEmail
+        contact.Email = userEmail;
         contact.Message = $"<p> Dear User, </p>" +
                 $"<p>Create your account using this signup link https://opineserver20210812121248.azurewebsites.net/signup/{tokenId} .Use the Email Address provided to the admin.</p>" +
                 $"<p>Regards, Admin. </p>";

@@ -23,7 +23,7 @@ namespace Opine.Server.Services
             EmailAddress from = new EmailAddress("Njezeojin@yandex.com", "Opine Poll");
             List<EmailAddress> recipients = new List<EmailAddress> { new EmailAddress(contact.Email, contact.Name) };
             
-            msg.SetSubject("Test Mail");
+            msg.SetSubject("Signup Link");
             msg.SetFrom(from);
             msg.AddTos(recipients);
             msg.HtmlContent = contact.Message;
