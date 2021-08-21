@@ -3,22 +3,24 @@
 @inject IDisplayMessage displayMessage
 @inject NavigationManager navigationManager
 @inject NotificationService NotificationService
+@attribute [Authorize] 
 
 
+<div class="full-height">
+    <h3 class="ml-5 mt-4">EditUser(Select Admin Role)</h3>
 
-<h3>EditUser(Select Admin Role)</h3>
+    <div class="form-check-inline ml-5 mt-4">
+        <select class="form-control mb-2 mr-sm-2" @bind="selectedRole">
+            <option value="0">--Select a Role--</option>
+            @foreach (var role in roles)
+            {
+                <option value="@role.RoleName">@role.RoleName</option>
+            }
+        </select>
 
-<div class="form-check-inline">
-    <select class="form-control mb-2 mr-sm-2" @bind="selectedRole">
-        <option value="0">--Select a Role--</option>
-        @foreach (var role in roles)
-        {
-            <option value="@role.RoleName">@role.RoleName</option>
-        }
-    </select>
+        <button class="btn btn-info mb-2 mr-sm-2" @onclick="AssignRole">Assign Role</button>
 
-    <button class="btn btn-info mb-2 mr-sm-2" @onclick="AssignRole">Assign Role</button>
-    
+    </div>
 </div>
 
 @code {

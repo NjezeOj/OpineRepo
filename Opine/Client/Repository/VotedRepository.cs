@@ -36,6 +36,17 @@ namespace Opine.Client.Repository
             return response.Response;
         }
 
+        public async Task<int> GetNumberOfVotes(int id)
+        {
+            var response = await httpService.Get<int>($"{baseURL}/{id}");
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+
+            return response.Response;
+        }
+
         public async Task DeleteVoted(int id)
         {
             var response = await httpService.Delete($"{baseURL}/{id}");

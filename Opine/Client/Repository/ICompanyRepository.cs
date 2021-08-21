@@ -10,7 +10,9 @@ namespace Opine.Client.Repository
     public interface ICompanyRepository
     {
         Task CreateCompany(Company company);
-       /* Task<List<Company>> Get();*/
+        Task DeleteCompany(int id);
+
+        /* Task<List<Company>> Get();*/
         Task<PaginatedResponse<List<Company>>> GetCompanies(PaginationDTO paginationDTO);
     }
 }

@@ -43,5 +43,18 @@ namespace Opine.Server.Controllers
             await context.SaveChangesAsync();
             return Ok();
         }
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var company = await context.Companies.FirstOrDefaultAsync(x => x.Id == id);
+            if (company == null)
+            {
+                return NotFound();
+            }
+
+            context.Remove(company);
+            await context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }

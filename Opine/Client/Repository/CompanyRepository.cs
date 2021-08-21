@@ -44,5 +44,14 @@ namespace Opine.Client.Repository
                 throw new ApplicationException(await response.GetBody());
             }
         }
+
+        public async Task DeleteCompany(int id)
+        {
+            var response = await httpService.Delete($"{baseURL}/{id}");
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+        }
     }
 }

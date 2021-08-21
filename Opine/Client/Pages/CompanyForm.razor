@@ -103,8 +103,9 @@
 
             catch (Exception ex)
             {
-                var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registeration Failed", Detail = ex.Message, Duration = 4000 };
+                var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registeration Failed", Duration = 4000 };
                 NotificationService.Notify(message);
+                Console.WriteLine(ex.Message);
             }
         }
         else

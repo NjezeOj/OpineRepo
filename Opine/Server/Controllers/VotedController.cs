@@ -25,6 +25,15 @@ namespace Opine.Server.Controllers
             return vote;
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<int>> Get(int id)
+        {
+            var votes = await context.Votes.Where(v => v.QuestionId == id).ToListAsync();
+            var count = votes.Count;
+            return count;
+        }
+
+
         [HttpPost]
         public async Task<ActionResult> Post(Voted voted)
         {

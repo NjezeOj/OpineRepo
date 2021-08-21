@@ -19,8 +19,7 @@
                 {
                     <tr>
                         <td>
-                            <a class="btn btn-success">Edit</a>
-                            <button class="btn btn-danger">Delete</button>
+                            <button class="btn btn-danger" @onclick="(()=>DeleteCompany(company.Id))">Delete</button>
                         </td>
                         <td>
                             @company.CompanyName
@@ -60,5 +59,11 @@
         paginationDTO.Page = page;
         await LoadCompanies();
 
+    }
+
+    private async Task DeleteCompany(int id)
+    {
+        await companyRepository.DeleteCompany(id);
+        await LoadCompanies();
     }
 }

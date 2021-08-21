@@ -1,6 +1,7 @@
 ﻿@page "/responsepage/{QuestionId:int}"
 @inject IPollRepository pollRepository
 @inject IUserRepository userRepository
+@inject IVotedRepository votedRepository
 @inject IQuestionRepository questionRepository
 
 
@@ -11,11 +12,19 @@
 else
 {
     <h3>@question.Ques</h3>
-    <div class="row">
+    <div class="row d-flex flex-row align-items-center justify-content-center">
         <div class="col-md-6 col-sm-12 p-4">
             <RadzenChart>
                 <RadzenPieSeries Data="@Polls" Title="Count" CategoryProperty="Option" ValueProperty="Count" />
             </RadzenChart>
+        </div>
+        <div class="d-flex justify-content-around questionbg align-items-center h-25 px-3 py-3 w-auto">
+            <div class="d-flex flex-column">
+                <h2>People that haven't selected an Opinion</h2>
+                <div class="d-flex justify-content-center">
+                    <h3>@NumberNotVoted</h3>
+                </div>
+            </div>
         </div>
     </div>
 }
@@ -24,8 +33,12 @@ else
 @code {
     List<Poll> Polls;
     List<Poll> CompanyPolls;
+    int NumberVotes;
+    int NumberNotVoted;
     List<UserDTO> Users;
+    List<UserDTO> CompanyUsers;
     private int CompanyId;
+    private int totalAmountOfPages;
     private string UserId;
     private Question question = new Question();
     PaginationDTO paginationDTO = new PaginationDTO() { RecordsPerPage = 1000000 };
@@ -41,7 +54,7 @@ else
             await GetUser();
             await LoadPolls();
             await LoadQuestions();
-
+            await LoadUsers();
         }
         catch (Exception ex)
         {
@@ -76,8 +89,19 @@ else
     private async Task LoadPolls()
     {
         CompanyPolls = await pollRepository.GetPollsById(CompanyId);
+        NumberVotes = await votedRepository.GetNumberOfVotes(QuestionId);
         Polls = CompanyPolls.Where(c => c.QuestionId == QuestionId).ToList();
     }
 
+    private async Task LoadUsers()
+    {
+        var paginatedResponse = await userRepository.GetUsersById(paginationDTO, CompanyId);
+        CompanyUsers = paginatedResponse.Response;
+        totalAmountOfPages = paginatedResponse.TotalAmountPages;
+
+        var NumberCompanyUsers = CompanyUsers.Count;
+        NumberNotVoted = NumberCompanyUsers - NumberVotes;
+
+    }
 
 }

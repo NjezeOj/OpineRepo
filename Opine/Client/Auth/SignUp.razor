@@ -2,11 +2,11 @@
 @using System.Net.Mail
 @inject IAccountsRepository accountsRepository
 @inject ICompanyRepository companyRepository
+@inject IUserRepository userRepository 
 @inject ILoginService loginService
 @inject QuestionService questionService
 @inject NavigationManager navigationManager
 @inject NotificationService NotificationService
-
 
 <EditForm Model="userInfo" OnSubmit="CreateUser">
     <div class="login div1">
@@ -48,7 +48,7 @@
             </div>
             <div class="form-group">
                 <div>
-                    <InputText class="form-control border-secondary w-75" placeholder="Company" @bind-Value="@userInfo.Company" />
+                    <InputText class="form-control border-secondary w-75" placeholder="Company(Lower-case)" @bind-Value="@userInfo.Company" />
                 </div>
             </div>
             <div class="form-group">
@@ -69,6 +69,7 @@
 @code {
 
     List<Company> Companies;
+    List<UserDTO> Users;
 
     private UserInfo userInfo = new UserInfo();
     private PaginationDTO paginationDTO = new PaginationDTO() { Page = 1, RecordsPerPage = 1000000000 };
@@ -77,29 +78,57 @@
     protected override async Task OnInitializedAsync()
     {
         await LoadCompanies();
+        Users = await userRepository.GetUsers();
+
+    }
+
+    private bool Check()
+    {
+        var companynameObj = Companies.Where(c => c.CompanyName == userInfo.Company).FirstOrDefault();
+        var userObj = Users.Where(u => u.Email == userInfo.Email).FirstOrDefault();
+
+        if (companynameObj != null && userObj == null) 
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private async Task CreateUser()
     {
         try
         {
-            userInfo.CompanyId = Companies.Where(c => c.CompanyName == userInfo.Company).Select(c => c.Id).FirstOrDefault();
+            if (Check())
+            {
+                userInfo.CompanyId = Companies.Where(c => c.CompanyName == userInfo.Company).Select(c => c.Id).FirstOrDefault();
+                userInfo.Email = userInfo.Email.ToLower();
+                userInfo.Company = userInfo.Company.ToLower();
+                IsValidEmail(userInfo.Email);
 
-            userInfo.Email = userInfo.Email.ToLower();
-            userInfo.Company = userInfo.Company.ToLower();
-            IsValidEmail(userInfo.Email);
+                var userToken = await accountsRepository.Register(userInfo); 
+                await loginService.Login(userToken.Token);
 
-            var userToken = await accountsRepository.Register(userInfo);
-            await loginService.Login(userToken.Token);
+                navigationManager.NavigateTo("/adminrole/2786");
+                var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Registration Success", Duration = 4000 };
+                NotificationService.Notify(message);
+            }
 
+            else
+            {
+                var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registration Failed", Detail = "Company or User already exists", Duration = 4000 };
+                NotificationService.Notify(message);
+            }
 
-            navigationManager.NavigateTo("/adminrole/2786");
         }
 
         catch (Exception ex)
         {
-            var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registration Failed", Detail = ex.Message, Duration = 4000 };
+            var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registration Failed", Duration = 4000 };
             NotificationService.Notify(message);
+            Console.WriteLine(ex.Message);
         }
 
 

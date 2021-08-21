@@ -2,6 +2,8 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
+    margin: 0;
 }
 
 
@@ -431,6 +433,15 @@ app {
         width: 90%;
         height: 95%;
     }
+/*SignInedit user*/
+.full-height {
+    background: white;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+}
 
 @media(max-width: 700px) {
 

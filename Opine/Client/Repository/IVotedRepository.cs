@@ -10,6 +10,7 @@ namespace Opine.Client.Repository
     {
         Task CreateVoted(Voted voted);
         Task DeleteVoted(int id);
+        Task<int> GetNumberOfVotes(int id);
         Task<Voted> GetVotedById(int id, string userId);
     }
 }
