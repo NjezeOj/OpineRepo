@@ -5,7 +5,7 @@
 @inject QuestionService questionService
 @attribute [Authorize]
 <section>
-    <div class="container">
+    <div>
         <h2>Responses</h2>
         <div class="d-flex flex-column">
             <GenericList List="Questions">
@@ -13,10 +13,12 @@
                     @foreach (var question in Questions)
                     {
                         ts = questionService.TimeCreated(question.UploadTime);
-                        <div class="d-flex flex-column flex-lg-row justify-content-around dashcontcolor questionbg align-items-center w-100 py-3 mt-3">
+                        <div class="d-flex flex-column flex-lg-row justify-content-around dashcontcolor questionbg align-items-center px-1 w-100 py-3 mt-3">
                             <div>
                                 <h2>@question.Ques</h2>
-                                <p>@question.QuestionUserName</p>
+                                <div class="d-flex justify-content-center justify-content-sm-start">
+                                    <p>by @question.QuestionUserName</p>
+                                </div>
                             </div>
                             <div class="d-flex flex-row">
                                 <p class="oi oi-clock pr-2 restimelogo"></p>
