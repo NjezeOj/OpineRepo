@@ -17,7 +17,7 @@
         <div class="login-h2">
             <h2> Get the answers you need</h2>
         </div>
-        <div class="login-pitch">
+        <div class="login-pitch d-flex justify-content-center">
             <p>
                 Get the feedback you need using the best result analysis
                 platform.
@@ -54,6 +54,7 @@
             <div class="form-group">
                 <div>
                     <InputPassword @bind-Value="@userInfo.Password" />
+                    <p>Password must contain a capital letter, small letter, number and symbol</p>
                 </div>
             </div>
 
@@ -118,7 +119,7 @@
 
             else
             {
-                var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registration Failed", Detail = "Company or User already exists", Duration = 4000 };
+                var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registration Failed", Detail = "User already exists or Invalid Password format", Duration = 4000 };
                 NotificationService.Notify(message);
             }
 
