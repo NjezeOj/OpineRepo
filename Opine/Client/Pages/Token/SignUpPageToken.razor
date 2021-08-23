@@ -68,6 +68,7 @@
 
 @code {
     List<Token> Tokens;
+    List<UserDTO> Users;
     private Token token = new Token();
     private UserInfo userInfo = new UserInfo();
     List<Company> Companies;
@@ -84,10 +85,25 @@
             var paginatedResponses = await companyRepository.GetCompanies(paginationDTO);
             Companies = paginatedResponses.Response;
             await LoadTokens();
+            Users = await userRepository.GetUsers();
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
+        }
+    }
+
+    private bool Check()
+    {
+        var userObj = Users.Where(u => u.Email == userInfo.Email).FirstOrDefault();
+
+        if (userObj == null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -104,12 +120,19 @@
         {
             try
             {
-                var userToken = await accountsRepository.Register(userInfo);
-                await loginService.Login(userToken.Token);
-                var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "SignUp Successful", Detail = "", Duration = 4000 };
-                NotificationService.Notify(message);
-                navigationManager.NavigateTo("dashboard");
-
+                if (Check())
+                {
+                    var userToken = await accountsRepository.Register(userInfo);
+                    await loginService.Login(userToken.Token);
+                    var message = new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "SignUp Successful", Detail = "", Duration = 4000 };
+                    NotificationService.Notify(message);
+                    navigationManager.NavigateTo("dashboard");
+                }
+                else
+                {
+                    var message = new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Registration Failed", Detail = "User already exists", Duration = 4000 };
+                    NotificationService.Notify(message);
+                }
             }
             catch (Exception ex)
             {
